@@ -45,6 +45,16 @@ type LuaState interface {
 	/* Comparison and arithmetic functions */
 	Arith(op ArithOp)
 	Compare(idx1, idx2 int, op CompareOp) bool
+	/* get functions (Lua -> stack) */
+	NewTable()
+	CreateTable(nArr, nRec int)
+	GetTable(idx int) LuaType
+	GetField(idx int, k string) LuaType
+	GetI(idx int, i int64) LuaType
+	/* set functions (stack -> Lua) */
+	SetTable(idx int)
+	SetField(idx int, k string)
+	SetI(idx int, i int64)
 	/* miscellaneous functions */
 	Len(idx int)
 	Concat(n int)
