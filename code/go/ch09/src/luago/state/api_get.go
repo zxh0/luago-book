@@ -37,6 +37,13 @@ func (self *luaState) GetI(idx int, i int64) LuaType {
 	return self.getTable(t, i)
 }
 
+// [-0, +1, e]
+// http://www.lua.org/manual/5.3/manual.html#lua_getglobal
+func (self *luaState) GetGlobal(name string) LuaType {
+	t := self.registry.get(LUA_RIDX_GLOBALS)
+	return self.getTable(t, name)
+}
+
 // push(t[k])
 func (self *luaState) getTable(t, k luaValue) LuaType {
 	if tbl, ok := t.(*luaTable); ok {
