@@ -33,8 +33,16 @@ func (self *luaState) RegisterCount() int {
 
 func (self *luaState) LoadProto(idx int) {
 	proto := self.stack.closure.proto.Protos[idx]
-	closure := newLuaClosure(proto)
-	self.stack.push(closure)
+	c := newLuaClosure(proto)
+	self.stack.push(c)
+
+	for i, uvInfo := range proto.Upvalues {
+		if uvInfo.Instack == 1 {
+			c.upvals[i] = &(self.stack.slots[uvInfo.Idx])
+		} else {
+			c.upvals[i] = self.stack.closure.upvals[uvInfo.Idx]
+		}
+	}
 }
 
 func (self *luaState) LoadVararg(n int) {
