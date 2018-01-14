@@ -21,7 +21,19 @@ func (self *luaState) Load(chunk []byte, chunkName, mode string) int {
 // http://www.lua.org/manual/5.3/manual.html#lua_call
 func (self *luaState) Call(nArgs, nResults int) {
 	val := self.stack.get(-(nArgs + 1))
-	if c, ok := val.(*closure); ok {
+
+	c, ok := val.(*closure)
+	if !ok {
+		if mf := getMetafield(val, "__call", self); mf != nil {
+			if c, ok = mf.(*closure); ok {
+				self.stack.push(val)
+				self.Insert(-(nArgs + 2))
+				nArgs += 1
+			}
+		}
+	}
+
+	if ok {
 		if c.proto != nil {
 			self.callLuaClosure(nArgs, nResults, c)
 		} else {

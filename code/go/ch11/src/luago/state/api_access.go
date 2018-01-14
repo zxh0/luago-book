@@ -4,6 +4,20 @@ import "fmt"
 import . "luago/api"
 
 // [-0, +0, –]
+// http://www.lua.org/manual/5.3/manual.html#lua_rawlen
+func (self *luaState) RawLen(idx int) uint {
+	val := self.stack.get(idx)
+	switch x := val.(type) {
+	case string:
+		return uint(len(x))
+	case *luaTable:
+		return uint(x.len())
+	default:
+		return 0
+	}
+}
+
+// [-0, +0, –]
 // http://www.lua.org/manual/5.3/manual.html#lua_typename
 func (self *luaState) TypeName(tp LuaType) string {
 	switch tp {
