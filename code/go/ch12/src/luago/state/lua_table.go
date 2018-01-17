@@ -7,6 +7,7 @@ type luaTable struct {
 	metatable *luaTable
 	_map      map[luaValue]luaValue
 	arr       []luaValue
+	keys      []luaValue // used by next()
 }
 
 func newLuaTable(nArr, nRec int) *luaTable {
@@ -102,5 +103,29 @@ func (self *luaTable) _expandArray() {
 		} else {
 			break
 		}
+	}
+}
+
+func (self *luaTable) nextKey(key luaValue) luaValue {
+	if key == nil {
+		self.initKeys()
+	}
+	if len(self.keys) > 0 {
+		kextKey := self.keys[0]
+		self.keys = self.keys[1:]
+		return kextKey
+	}
+	return nil
+}
+
+func (self *luaTable) initKeys() {
+	self.keys = nil
+	for i, v := range self.arr {
+		if v != nil {
+			self.keys = append(self.keys, int64(i))
+		}
+	}
+	for k, _ := range self._map {
+		self.keys = append(self.keys, k)
 	}
 }
