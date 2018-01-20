@@ -14,7 +14,7 @@ func (self *luaState) Load(chunk []byte, chunkName, mode string) int {
 		env := self.registry.get(LUA_RIDX_GLOBALS)
 		c.upvals[0] = &env
 	}
-	return 0
+	return LUA_OK
 }
 
 // [-(nargs+1), +nresults, e]
@@ -105,5 +105,46 @@ func (self *luaState) runLuaClosure() {
 		if inst.Opcode() == vm.OP_RETURN {
 			break
 		}
+	}
+}
+
+// Calls a function in protected mode.
+// http://www.lua.org/manual/5.3/manual.html#lua_pcall
+func (self *luaState) PCall(nArgs, nResults, msgh int) (status int) {
+	caller := self.stack
+
+	// catch error
+	defer func() {
+		if r := recover(); r != nil { // todo
+			if msgh != 0 {
+				panic(r)
+			} else {
+				for self.stack != caller {
+					self.popLuaStack()
+				}
+				self.stack.push(_getErrObj(r))
+				status = LUA_ERRRUN
+			}
+		}
+	}()
+
+	self.Call(nArgs, nResults)
+	status = LUA_OK
+	return
+}
+
+func _getErrObj(err interface{}) luaValue {
+	if t, ok := err.(*luaTable); ok {
+		return t.get("_ERR")
+	}
+
+	// runtime error
+	switch x := err.(type) {
+	case string:
+		return x
+	case error:
+		return x.Error()
+	default:
+		return "unknown error"
 	}
 }
