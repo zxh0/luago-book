@@ -115,14 +115,14 @@ func (self *luaState) PCall(nArgs, nResults, msgh int) (status int) {
 
 	// catch error
 	defer func() {
-		if r := recover(); r != nil { // todo
+		if r := recover(); r != nil {
 			if msgh != 0 {
 				panic(r)
 			} else {
 				for self.stack != caller {
 					self.popLuaStack()
 				}
-				self.stack.push(_getErrObj(r))
+				self.stack.push(r)
 				status = LUA_ERRRUN
 			}
 		}
@@ -131,20 +131,4 @@ func (self *luaState) PCall(nArgs, nResults, msgh int) (status int) {
 	self.Call(nArgs, nResults)
 	status = LUA_OK
 	return
-}
-
-func _getErrObj(err interface{}) luaValue {
-	if t, ok := err.(*luaTable); ok {
-		return t.get("_ERR")
-	}
-
-	// runtime error
-	switch x := err.(type) {
-	case string:
-		return x
-	case error:
-		return x.Error()
-	default:
-		return "unknown error"
-	}
 }

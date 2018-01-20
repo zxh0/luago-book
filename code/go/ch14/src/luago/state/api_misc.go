@@ -64,7 +64,6 @@ func (self *luaState) Next(idx int) bool {
 // [-1, +0, v]
 // http://www.lua.org/manual/5.3/manual.html#lua_error
 func (self *luaState) Error() int {
-	err := newLuaTable(0, 1)
-	err.put("_ERR", self.stack.pop())
+	err := self.stack.pop()
 	panic(err)
 }
