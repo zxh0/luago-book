@@ -61,7 +61,6 @@ type ConcatExp struct {
 type TableConstructorExp struct {
 	Line     int // line of `{` ?
 	LastLine int // line of `}`
-	NArr     int
 	KeyExps  []Exp
 	ValExps  []Exp
 }
