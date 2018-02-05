@@ -22,7 +22,7 @@ func main() {
 		ls.Register("ipairs", iPairs)
 		ls.Register("error", error)
 		ls.Register("pcall", pCall)
-		ls.Load(data, "chunk", "b")
+		ls.Load(data, os.Args[1], "bt")
 		ls.Call(0, 0)
 	}
 }
