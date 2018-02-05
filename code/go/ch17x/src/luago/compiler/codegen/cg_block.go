@@ -8,21 +8,21 @@ func cgBlock(fi *funcInfo, node *Block) {
 	}
 
 	if node.RetExps != nil {
-		cgRetStat(fi, node.RetExps)
+		cgRetStat(fi, node.RetExps, node.LastLine)
 	}
 }
 
-func cgRetStat(fi *funcInfo, exps []Exp) {
+func cgRetStat(fi *funcInfo, exps []Exp, lastLine int) {
 	nExps := len(exps)
 	if nExps == 0 {
-		fi.emitReturn(0, 0)
+		fi.emitReturn(lastLine, 0, 0)
 		return
 	}
 
 	if nExps == 1 {
 		if nameExp, ok := exps[0].(*NameExp); ok {
 			if r := fi.slotOfLocVar(nameExp.Name); r >= 0 {
-				fi.emitReturn(r, 1)
+				fi.emitReturn(lastLine, r, 1)
 				return
 			}
 		}
@@ -30,7 +30,7 @@ func cgRetStat(fi *funcInfo, exps []Exp) {
 			r := fi.allocReg()
 			cgTailCallExp(fi, fcExp, r)
 			fi.freeReg()
-			fi.emitReturn(r, -1)
+			fi.emitReturn(lastLine, r, -1)
 			return
 		}
 	}
@@ -48,8 +48,8 @@ func cgRetStat(fi *funcInfo, exps []Exp) {
 
 	a := fi.usedRegs // correct?
 	if multRet {
-		fi.emitReturn(a, -1)
+		fi.emitReturn(lastLine, a, -1)
 	} else {
-		fi.emitReturn(a, nExps)
+		fi.emitReturn(lastLine, a, nExps)
 	}
 }

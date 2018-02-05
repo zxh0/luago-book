@@ -18,3 +18,77 @@ func removeTailNils(exps []Exp) []Exp {
 	}
 	return nil
 }
+
+func lineOf(exp Exp) int {
+	switch x := exp.(type) {
+	case *NilExp:
+		return x.Line
+	case *TrueExp:
+		return x.Line
+	case *FalseExp:
+		return x.Line
+	case *IntegerExp:
+		return x.Line
+	case *FloatExp:
+		return x.Line
+	case *StringExp:
+		return x.Line
+	case *VarargExp:
+		return x.Line
+	case *NameExp:
+		return x.Line
+	case *FuncDefExp:
+		return x.Line
+	case *FuncCallExp:
+		return x.Line
+	case *TableConstructorExp:
+		return x.Line
+	case *UnopExp:
+		return x.Line
+	case *TableAccessExp:
+		return lineOf(x.PrefixExp)
+	case *ConcatExp:
+		return lineOf(x.Exps[0])
+	case *BinopExp:
+		return lineOf(x.Exp1)
+	default:
+		panic("unreachable!")
+	}
+}
+
+func lastLineOf(exp Exp) int {
+	switch x := exp.(type) {
+	case *NilExp:
+		return x.Line
+	case *TrueExp:
+		return x.Line
+	case *FalseExp:
+		return x.Line
+	case *IntegerExp:
+		return x.Line
+	case *FloatExp:
+		return x.Line
+	case *StringExp:
+		return x.Line
+	case *VarargExp:
+		return x.Line
+	case *NameExp:
+		return x.Line
+	case *FuncDefExp:
+		return x.LastLine
+	case *FuncCallExp:
+		return x.LastLine
+	case *TableConstructorExp:
+		return x.LastLine
+	case *TableAccessExp:
+		return x.LastLine
+	case *ConcatExp:
+		return lastLineOf(x.Exps[len(x.Exps)-1])
+	case *BinopExp:
+		return lastLineOf(x.Exp2)
+	case *UnopExp:
+		return lastLineOf(x.Exp)
+	default:
+		panic("unreachable!")
+	}
+}
