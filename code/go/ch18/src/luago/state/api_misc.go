@@ -1,5 +1,7 @@
 package state
 
+import "luago/number"
+
 // [-0, +1, e]
 // http://www.lua.org/manual/5.3/manual.html#lua_len
 func (self *luaState) Len(idx int) {
@@ -66,4 +68,18 @@ func (self *luaState) Next(idx int) bool {
 func (self *luaState) Error() int {
 	err := self.stack.pop()
 	panic(err)
+}
+
+// [-0, +1, –]
+// http://www.lua.org/manual/5.3/manual.html#lua_stringtonumber
+func (self *luaState) StringToNumber(s string) bool {
+	if n, ok := number.ParseInteger(s); ok {
+		self.PushInteger(n)
+		return true
+	}
+	if n, ok := number.ParseFloat(s); ok {
+		self.PushNumber(n)
+		return true
+	}
+	return false
 }

@@ -1,5 +1,6 @@
 package state
 
+import "fmt"
 import . "luago/api"
 
 // [-0, +1, –]
@@ -30,6 +31,13 @@ func (self *luaState) PushNumber(n float64) {
 // http://www.lua.org/manual/5.3/manual.html#lua_pushstring
 func (self *luaState) PushString(s string) {
 	self.stack.push(s)
+}
+
+// [-0, +1, e]
+// http://www.lua.org/manual/5.3/manual.html#lua_pushfstring
+func (self *luaState) PushFString(fmtStr string, a ...interface{}) {
+	str := fmt.Sprintf(fmtStr, a...)
+	self.stack.push(str)
 }
 
 // [-0, +1, –]
