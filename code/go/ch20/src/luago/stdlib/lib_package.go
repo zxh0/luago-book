@@ -36,7 +36,7 @@ func OpenPackageLib(ls LuaState) int {
 	ls.NewLib(pkgFuncs) /* create 'package' table */
 	createSearchersTable(ls)
 	/* set paths */
-	ls.PushString("./?.lua")
+	ls.PushString("./?.lua;./?/init.lua")
 	ls.SetField(-2, "path")
 	/* store config information */
 	ls.PushString(LUA_DIRSEP + "\n" + LUA_PATH_SEP + "\n" +
