@@ -122,7 +122,7 @@ func (self *luaTable) initKeys() {
 	self.keys = nil
 	for i, v := range self.arr {
 		if v != nil {
-			self.keys = append(self.keys, int64(i))
+			self.keys = append(self.keys, int64(i+1))
 		}
 	}
 	for k, _ := range self._map {
