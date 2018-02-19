@@ -77,7 +77,7 @@ type AssignStat struct {
 // local namelist [‘=’ explist]
 // namelist ::= Name {‘,’ Name}
 // explist ::= exp {‘,’ exp}
-type LocalAssignStat struct {
+type LocalVarDeclStat struct {
 	LastLine int
 	NameList []string
 	ExpList  []Exp
