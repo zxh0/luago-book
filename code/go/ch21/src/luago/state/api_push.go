@@ -63,3 +63,10 @@ func (self *luaState) PushGlobalTable() {
 	global := self.registry.get(LUA_RIDX_GLOBALS)
 	self.stack.push(global)
 }
+
+// [-0, +1, –]
+// http://www.lua.org/manual/5.3/manual.html#lua_pushthread
+func (self *luaState) PushThread() bool {
+	self.stack.push(self)
+	return self.isMainThread()
+}

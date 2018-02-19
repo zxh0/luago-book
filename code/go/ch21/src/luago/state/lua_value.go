@@ -20,6 +20,8 @@ func typeOf(val luaValue) LuaType {
 		return LUA_TTABLE
 	case *closure:
 		return LUA_TFUNCTION
+	case *luaState:
+		return LUA_TTHREAD
 	default:
 		panic("todo!")
 	}
