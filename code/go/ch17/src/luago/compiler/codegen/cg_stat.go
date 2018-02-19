@@ -22,8 +22,8 @@ func cgStat(fi *funcInfo, node Stat) {
 		cgForInStat(fi, stat)
 	case *AssignStat:
 		cgAssignStat(fi, stat)
-	case *LocalAssignStat:
-		cgLocalAssignStat(fi, stat)
+	case *LocalVarDeclStat:
+		cgLocalVarDeclStat(fi, stat)
 	case *LocalFuncDefStat:
 		cgLocalFuncDefStat(fi, stat)
 	case *LabelStat, *GotoStat:
@@ -145,7 +145,7 @@ func cgIfStat(fi *funcInfo, node *IfStat) {
 func cgForNumStat(fi *funcInfo, node *ForNumStat) {
 	fi.enterScope(true)
 
-	cgLocalAssignStat(fi, &LocalAssignStat{
+	cgLocalVarDeclStat(fi, &LocalVarDeclStat{
 		NameList: []string{"(for index)", "(for limit)", "(for step)"},
 		ExpList:  []Exp{node.InitExp, node.LimitExp, node.StepExp},
 	})
@@ -165,7 +165,7 @@ func cgForNumStat(fi *funcInfo, node *ForNumStat) {
 func cgForInStat(fi *funcInfo, node *ForInStat) {
 	fi.enterScope(true)
 
-	cgLocalAssignStat(fi, &LocalAssignStat{
+	cgLocalVarDeclStat(fi, &LocalVarDeclStat{
 		NameList: []string{"(for generator)", "(for state)", "(for control)"},
 		ExpList:  node.ExpList,
 	})
@@ -184,7 +184,7 @@ func cgForInStat(fi *funcInfo, node *ForInStat) {
 	fi.exitScope()
 }
 
-func cgLocalAssignStat(fi *funcInfo, node *LocalAssignStat) {
+func cgLocalVarDeclStat(fi *funcInfo, node *LocalVarDeclStat) {
 	exps := removeTailNils(node.ExpList)
 	nExps := len(exps)
 	nNames := len(node.NameList)

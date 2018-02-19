@@ -199,7 +199,7 @@ func parseLocalAssignOrFuncDefStat(lexer *Lexer) Stat {
 	if lexer.LookAhead() == TOKEN_KW_FUNCTION {
 		return _finishLocalFuncDefStat(lexer)
 	} else {
-		return _finishLocalAssignStat(lexer)
+		return _finishLocalVarDeclStat(lexer)
 	}
 }
 
@@ -226,7 +226,7 @@ func _finishLocalFuncDefStat(lexer *Lexer) *LocalFuncDefStat {
 }
 
 // local namelist [‘=’ explist]
-func _finishLocalAssignStat(lexer *Lexer) *LocalAssignStat {
+func _finishLocalVarDeclStat(lexer *Lexer) *LocalVarDeclStat {
 	_, name0 := lexer.NextIdentifier()        // local Name
 	nameList := _finishNameList(lexer, name0) // { , Name }
 	var expList []Exp = nil
@@ -235,7 +235,7 @@ func _finishLocalAssignStat(lexer *Lexer) *LocalAssignStat {
 		expList = parseExpList(lexer) // explist
 	}
 	lastLine := lexer.Line()
-	return &LocalAssignStat{lastLine, nameList, expList}
+	return &LocalVarDeclStat{lastLine, nameList, expList}
 }
 
 // varlist ‘=’ explist

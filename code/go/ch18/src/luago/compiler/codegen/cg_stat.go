@@ -22,8 +22,8 @@ func cgStat(fi *funcInfo, node Stat) {
 		cgForInStat(fi, stat)
 	case *AssignStat:
 		cgAssignStat(fi, stat)
-	case *LocalAssignStat:
-		cgLocalAssignStat(fi, stat)
+	case *LocalVarDeclStat:
+		cgLocalVarDeclStat(fi, stat)
 	case *LocalFuncDefStat:
 		cgLocalFuncDefStat(fi, stat)
 	case *LabelStat, *GotoStat:
@@ -153,7 +153,7 @@ func cgForNumStat(fi *funcInfo, node *ForNumStat) {
 
 	fi.enterScope(true)
 
-	cgLocalAssignStat(fi, &LocalAssignStat{
+	cgLocalVarDeclStat(fi, &LocalVarDeclStat{
 		NameList: []string{forIndexVar, forLimitVar, forStepVar},
 		ExpList:  []Exp{node.InitExp, node.LimitExp, node.StepExp},
 	})
@@ -180,7 +180,7 @@ func cgForInStat(fi *funcInfo, node *ForInStat) {
 
 	fi.enterScope(true)
 
-	cgLocalAssignStat(fi, &LocalAssignStat{
+	cgLocalVarDeclStat(fi, &LocalVarDeclStat{
 		//LastLine: 0,
 		NameList: []string{forGeneratorVar, forStateVar, forControlVar},
 		ExpList:  node.ExpList,
@@ -204,7 +204,7 @@ func cgForInStat(fi *funcInfo, node *ForInStat) {
 	fi.fixEndPC(forControlVar, 2)
 }
 
-func cgLocalAssignStat(fi *funcInfo, node *LocalAssignStat) {
+func cgLocalVarDeclStat(fi *funcInfo, node *LocalVarDeclStat) {
 	exps := removeTailNils(node.ExpList)
 	nExps := len(exps)
 	nNames := len(node.NameList)
