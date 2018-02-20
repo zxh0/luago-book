@@ -25,7 +25,7 @@ func (self *luaState) Resume(from LuaState, nArgs int) int {
 		self.coChan = make(chan int)
 		self.coCaller = lsFrom
 		go func() {
-			self.Call(nArgs, -1)
+			self.coStatus = self.PCall(nArgs, -1, 0)
 			lsFrom.coChan <- 1
 		}()
 	} else {
@@ -35,7 +35,7 @@ func (self *luaState) Resume(from LuaState, nArgs int) int {
 	}
 
 	<-lsFrom.coChan // wait coroutine to finish or yield
-	return LUA_OK
+	return self.coStatus
 }
 
 // [-?, +?, e]
