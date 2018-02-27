@@ -1,3 +1,4 @@
 pkg/
 bin/
 *.DS_Store
+luac.out
