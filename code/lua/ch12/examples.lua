@@ -40,6 +40,36 @@ for k, v in pairs(t) do
 end
 
 
+t = {a=10, b=20, c=30}
+for k, v in next, t, nil do
+  print(k, v)
+end
+
+
+function pairs(t)
+  return next, t, nil
+end
+t = {a=10, b=20, c=30}
+for k, v in pairs(t) do
+  print(k, v)
+end
+
+
+function inext(t, i)
+  local nextIdx = i + 1
+  local nextVal = t[nextIdx] 
+  if nextVal == nil then
+    return nil
+  else 
+    return nextIdx, nextVal
+  end
+end
+t = {10, 20, 30}
+for i, v in inext, t, 0 do
+  print(i, v)
+end
+
+
 --[[
 function next(table, key)
   if key == nil then
