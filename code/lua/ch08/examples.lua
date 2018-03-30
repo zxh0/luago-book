@@ -3,7 +3,7 @@ function f(a, b, c)
 end
 f()              -->	nil	nil	nil
 f(1, 2)          -->	1	2	nil
-f(1, 2, 3, 4, 5) -->	1	3	3
+f(1, 2, 3, 4, 5) -->	1	2	3
 
 
 function f(a, ...)
