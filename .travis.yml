@@ -12,7 +12,7 @@ install:
   - tar zxf lua-5.3.4.tar.gz
   - cd lua-5.3.4
   - make linux test
-  - ls lua-5.3.4
+  - ls -al
 
 script:
   - lua -v
