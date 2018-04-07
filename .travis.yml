@@ -7,8 +7,8 @@ language: go
 go:
   - "1.9"
 
-install: true
+install:
+  - sudo apt-get install lua5.2
 
 script:
   - lua -v
-
