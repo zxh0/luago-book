@@ -11,3 +11,4 @@ install: true
 
 script:
   - lua -v
+
