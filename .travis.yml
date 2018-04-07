@@ -1,0 +1,13 @@
+branches:
+  only:
+    - master
+
+language: go
+
+go:
+  - "1.9"
+
+install: true
+
+script:
+  - lua -v
