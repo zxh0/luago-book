@@ -9,7 +9,7 @@ go:
 
 install:
   - sudo apt-get -qq update
-  - sudo apt-get install lua5.3.4
+  - sudo apt-get install lua5.3
 
 script:
   - lua -v
