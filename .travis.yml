@@ -12,7 +12,9 @@ install:
   - tar zxf lua-5.3.4.tar.gz
   - cd lua-5.3.4
   - make linux test
-  - ls -al
+  - cd ..
 
 script:
-  - lua -v
+  - cd code/go/ch01
+  - export GOPATH=$PWD
+  - go install luago
