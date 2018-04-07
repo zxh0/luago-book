@@ -8,7 +8,7 @@ go:
   - "1.9"
 
 install:
-  - sudo apt-get install lua5.2
+  - sudo apt-get install lua5.3.4
 
 script:
   - lua -v
