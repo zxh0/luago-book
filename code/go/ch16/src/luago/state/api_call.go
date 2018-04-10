@@ -12,7 +12,7 @@ func (self *luaState) Load(chunk []byte, chunkName, mode string) int {
 	self.stack.push(c)
 	if len(proto.Upvalues) > 0 {
 		env := self.registry.get(LUA_RIDX_GLOBALS)
-		c.upvals[0] = &env
+		c.upvals[0] = &upvalue{&env}
 	}
 	return LUA_OK
 }
@@ -110,9 +110,9 @@ func (self *luaState) runLuaClosure() {
 
 // Calls a function in protected mode.
 // http://www.lua.org/manual/5.3/manual.html#lua_pcall
-func (self *luaState) PCall(nArgs, nResults, msgh int) int {
+func (self *luaState) PCall(nArgs, nResults, msgh int) (status int) {
 	caller := self.stack
-	status := LUA_ERRRUN
+	status = LUA_ERRRUN
 
 	// catch error
 	defer func() {
@@ -129,5 +129,5 @@ func (self *luaState) PCall(nArgs, nResults, msgh int) int {
 
 	self.Call(nArgs, nResults)
 	status = LUA_OK
-	return status
+	return
 }
