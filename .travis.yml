@@ -1,6 +1,6 @@
-branches:
-  only:
-    - master
+# branches:
+#   only:
+#     - master
 
 language: go
 
@@ -13,8 +13,10 @@ install:
   - cd lua-5.3.4
   - make linux test
   - cd ..
+  - sudo ln -s $PWD/lua-5.3.4/src/lua /usr/bin/lua
+  - sudo ln -s $PWD/lua-5.3.4/src/luac /usr/bin/luac
+  - luac -v
 
 script:
-  - cd code/go/ch01
-  - export GOPATH=$PWD
-  - go install luago
+  - sudo chmod +x ./test.sh
+  - ./test.sh
