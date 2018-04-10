@@ -8,6 +8,7 @@ type LuaVM interface {
 	GetConst(idx int)
 	GetRK(rk int)
 	RegisterCount() int
-	LoadProto(idx int)
 	LoadVararg(n int)
+	LoadProto(idx int)
+	CloseUpvalues(a int)
 }
