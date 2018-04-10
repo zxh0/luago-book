@@ -10,6 +10,7 @@ type luaStack struct {
 	state   *luaState
 	closure *closure
 	varargs []luaValue
+	openuvs map[int]*upvalue
 	pc      int
 	/* linked list */
 	prev *luaStack
@@ -98,7 +99,7 @@ func (self *luaStack) get(idx int) luaValue {
 		if c == nil || uvIdx >= len(c.upvals) {
 			return nil
 		}
-		return *(c.upvals[uvIdx])
+		return *(c.upvals[uvIdx].val)
 	}
 
 	if idx == LUA_REGISTRYINDEX {
@@ -117,7 +118,7 @@ func (self *luaStack) set(idx int, val luaValue) {
 		uvIdx := LUA_REGISTRYINDEX - idx - 1
 		c := self.closure
 		if c != nil && uvIdx < len(c.upvals) {
-			c.upvals[uvIdx] = &val
+			c.upvals[uvIdx].val = &val
 		}
 		return
 	}
