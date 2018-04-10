@@ -52,7 +52,7 @@ func (self *luaState) PushGoClosure(f GoFunction, n int) {
 	closure := newGoClosure(f, n)
 	for i := n; i > 0; i-- {
 		val := self.stack.pop()
-		closure.upvals[n-1] = &val
+		closure.upvals[n-1] = &upvalue{&val}
 	}
 	self.stack.push(closure)
 }
