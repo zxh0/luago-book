@@ -60,6 +60,10 @@ cd ../ch16; export GOPATH=$PWD; go install luago
 cd ../ch17; export GOPATH=$PWD; go install luago
 ./bin/luago ../../lua/ch02/hello_world.lua | grep -q "Hello, World!"
 
+# ch17x
+cd ../ch17x; export GOPATH=$PWD; go install luago
+./bin/luago ../../lua/ch02/hello_world.lua | grep -q "Hello, World!"
+
 # ch18
 cd ../ch18; export GOPATH=$PWD; go install luago
 ./bin/luago ../../lua/ch02/hello_world.lua | grep -q "Hello, World!"
