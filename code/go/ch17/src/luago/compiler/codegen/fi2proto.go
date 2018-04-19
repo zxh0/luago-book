@@ -10,9 +10,9 @@ func toProto(fi *funcInfo) *Prototype {
 		Constants:    getConstants(fi),
 		Upvalues:     getUpvalues(fi),
 		Protos:       toProtos(fi.subFuncs),
-		LineInfo:     []uint32{},          // debug
+		LineInfo:     []uint32{}, // debug
 		LocVars:      []LocVar{}, // debug
-		UpvalueNames: []string{},          // debug
+		UpvalueNames: []string{}, // debug
 	}
 
 	if proto.MaxStackSize < 2 {

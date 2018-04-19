@@ -139,7 +139,7 @@ func cgBinopExp(fi *funcInfo, node *BinopExp, a int) {
 		} else {
 			fi.emitTestSet(a, b, 1)
 		}
-		pcOfJmp := fi.emitJmp(0)
+		pcOfJmp := fi.emitJmp(0, 0)
 
 		b = fi.allocReg()
 		cgExp(fi, node.Exp2, b, 1)
