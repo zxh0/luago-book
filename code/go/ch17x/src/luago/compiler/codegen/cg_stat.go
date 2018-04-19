@@ -43,13 +43,14 @@ func cgFuncCallStat(fi *funcInfo, node *FuncCallStat) {
 }
 
 func cgBreakStat(fi *funcInfo, node *BreakStat) {
-	pc := fi.emitJmp(node.Line, 0)
+	pc := fi.emitJmp(node.Line, 0, 0)
 	fi.addBreakJmp(pc)
 }
 
 func cgDoStat(fi *funcInfo, node *DoStat) {
 	fi.enterScope(false)
 	cgBlock(fi, node.Block)
+	fi.closeOpenUpvals(node.Block.LastLine)
 	fi.exitScope(fi.pc() + 1)
 }
 
@@ -71,11 +72,12 @@ func cgWhileStat(fi *funcInfo, node *WhileStat) {
 
 	line := lastLineOf(node.Exp)
 	fi.emitTest(line, a, 0)
-	pcJmpToEnd := fi.emitJmp(line, 0)
+	pcJmpToEnd := fi.emitJmp(line, 0, 0)
 
 	fi.enterScope(true)
 	cgBlock(fi, node.Block)
-	fi.emitJmp(node.Block.LastLine, pcBeforeExp-fi.pc()-1)
+	fi.closeOpenUpvals(node.Block.LastLine)
+	fi.emitJmp(node.Block.LastLine, 0, pcBeforeExp-fi.pc()-1)
 	fi.exitScope(fi.pc())
 
 	fi.fixSbx(pcJmpToEnd, fi.pc()-pcJmpToEnd)
@@ -99,7 +101,8 @@ func cgRepeatStat(fi *funcInfo, node *RepeatStat) {
 
 	line := lastLineOf(node.Exp)
 	fi.emitTest(line, a, 0)
-	fi.emitJmp(line, pcBeforeBlock-fi.pc()-1)
+	fi.emitJmp(line, fi.getJmpArgA(), pcBeforeBlock-fi.pc()-1)
+	fi.closeOpenUpvals(line)
 
 	fi.exitScope(fi.pc() + 1)
 }
@@ -128,14 +131,15 @@ func cgIfStat(fi *funcInfo, node *IfStat) {
 
 		line := lastLineOf(exp)
 		fi.emitTest(line, a, 0)
-		pcJmpToNextExp = fi.emitJmp(line, 0)
+		pcJmpToNextExp = fi.emitJmp(line, 0, 0)
 
 		block := node.Blocks[i]
 		fi.enterScope(false)
 		cgBlock(fi, block)
+		fi.closeOpenUpvals(block.LastLine)
 		fi.exitScope(fi.pc() + 1)
 		if i < len(node.Exps)-1 {
-			pcJmpToEnds[i] = fi.emitJmp(block.LastLine, 0)
+			pcJmpToEnds[i] = fi.emitJmp(block.LastLine, 0, 0)
 		} else {
 			pcJmpToEnds[i] = pcJmpToNextExp
 		}
@@ -162,6 +166,7 @@ func cgForNumStat(fi *funcInfo, node *ForNumStat) {
 	a := fi.usedRegs - 4
 	pcForPrep := fi.emitForPrep(node.LineOfDo, a, 0)
 	cgBlock(fi, node.Block)
+	fi.closeOpenUpvals(node.Block.LastLine)
 	pcForLoop := fi.emitForLoop(node.LineOfFor, a, 0)
 
 	fi.fixSbx(pcForPrep, pcForLoop-pcForPrep-1)
@@ -189,8 +194,9 @@ func cgForInStat(fi *funcInfo, node *ForInStat) {
 		fi.addLocVar(name, fi.pc()+2)
 	}
 
-	pcJmpToTFC := fi.emitJmp(node.LineOfDo, 0)
+	pcJmpToTFC := fi.emitJmp(node.LineOfDo, 0, 0)
 	cgBlock(fi, node.Block)
+	fi.closeOpenUpvals(node.Block.LastLine)
 	fi.fixSbx(pcJmpToTFC, fi.pc()-pcJmpToTFC)
 
 	line := lineOf(node.ExpList[0])
@@ -317,8 +323,15 @@ func cgAssignStat(fi *funcInfo, node *AssignStat) {
 			varName := nameExp.Name
 			if a := fi.slotOfLocVar(varName); a >= 0 {
 				fi.emitMove(lastLine, a, vRegs[i])
-			} else if a := fi.indexOfUpval(varName); a >= 0 {
-				fi.emitSetUpval(lastLine, a, vRegs[i])
+			} else if b := fi.indexOfUpval(varName); b >= 0 {
+				fi.emitSetUpval(lastLine, vRegs[i], b)
+			} else if a := fi.slotOfLocVar("_ENV"); a >= 0 {
+				if kRegs[i] < 0 {
+					b := 0x100 + fi.indexOfConstant(varName)
+					fi.emitSetTable(lastLine, a, b, vRegs[i])
+				} else {
+					fi.emitSetTable(lastLine, a, kRegs[i], vRegs[i])
+				}
 			} else { // global var
 				a := fi.indexOfUpval("_ENV")
 				if kRegs[i] < 0 {

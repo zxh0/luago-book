@@ -152,7 +152,7 @@ func cgBinopExp(fi *funcInfo, node *BinopExp, a int) {
 		} else {
 			fi.emitTestSet(node.Line, a, b, 1)
 		}
-		pcOfJmp := fi.emitJmp(node.Line, 0)
+		pcOfJmp := fi.emitJmp(node.Line, 0, 0)
 
 		b, _ = expToOpArg(fi, node.Exp2, ARG_REG)
 		fi.usedRegs = oldRegs
