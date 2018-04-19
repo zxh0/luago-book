@@ -140,7 +140,7 @@ func (self *funcInfo) exitScope(endPC int) {
 
 	a := self.getJmpArgA()
 	for _, pc := range pendingBreakJmps {
-		sBx := self.pc()-pc
+		sBx := self.pc() - pc
 		i := (sBx+MAXARG_sBx)<<14 | a<<6 | OP_JMP
 		self.insts[pc] = uint32(i)
 	}
