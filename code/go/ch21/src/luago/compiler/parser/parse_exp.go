@@ -56,8 +56,7 @@ func parseExp11(lexer *Lexer) Exp {
 	for lexer.LookAhead() == TOKEN_OP_AND {
 		line, op, _ := lexer.NextToken()
 		land := &BinopExp{line, op, exp, parseExp10(lexer)}
-		last := lexer.LookAhead() != TOKEN_OP_AND // todo
-		exp = optimizeLogicalAnd(land, last)
+		exp = optimizeLogicalAnd(land)
 	}
 	return exp
 }
