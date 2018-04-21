@@ -224,7 +224,7 @@ func (self *funcInfo) indexOfUpval(name string) int {
 func (self *funcInfo) closeOpenUpvals(line int) {
 	a := self.getJmpArgA()
 	if a > 0 {
-		self.emitAsBx(line, OP_JMP, a, 0, 0) // todo
+		self.emitJmp(line, a, 0)
 	}
 }
 
