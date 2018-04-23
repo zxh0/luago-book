@@ -86,7 +86,7 @@ func (self *luaState) getTable(t, k luaValue, raw bool) LuaType {
 		if mf := getMetafield(t, "__index", self); mf != nil {
 			switch x := mf.(type) {
 			case *luaTable:
-				return self.getTable(x, k, true)
+				return self.getTable(x, k, false)
 			case *closure:
 				self.stack.push(mf)
 				self.stack.push(t)
