@@ -25,13 +25,13 @@ func (self *luaState) Concat(n int) {
 		self.stack.push("")
 	} else if n >= 2 {
 		for i := 1; i < n; i++ {
-			if s2, ok := self.ToString(-1); ok {
-				if s1, ok := self.ToString(-2); ok {
-					self.stack.pop()
-					self.stack.pop()
-					self.stack.push(s1 + s2)
-					continue
-				}
+			if self.IsString(-1) && self.IsString(-2) {
+				s2, _ := self.ToString(-1)
+				s1, _ := self.ToString(-2)
+				self.stack.pop()
+				self.stack.pop()
+				self.stack.push(s1 + s2)
+				continue
 			}
 
 			b := self.stack.pop()
