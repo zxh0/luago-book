@@ -10,7 +10,7 @@ import "strings"
 var reNewLine = regexp.MustCompile("\r\n|\n\r|\n|\r")
 var reIdentifier = regexp.MustCompile(`^[_\d\w]+`)
 var reNumber = regexp.MustCompile(`^0[xX][0-9a-fA-F]*(\.[0-9a-fA-F]*)?([pP][+\-]?[0-9]+)?|^[0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?`)
-var reShortStr = regexp.MustCompile(`(?s)(^'(\\\\|\\'|\\z?\n|[^'\n])*')|(^"(\\\\|\\"|\\z?\n|[^"\n])*")`)
+var reShortStr = regexp.MustCompile(`(?s)(^'(\\\\|\\'|\\\n|\\z\s*|[^'\n])*')|(^"(\\\\|\\"|\\\n|\\z\s*|[^"\n])*")`)
 var reOpeningLongBracket = regexp.MustCompile(`^\[=*\[`)
 
 var reDecEscapeSeq = regexp.MustCompile(`^\\[0-9]{1,3}`)
