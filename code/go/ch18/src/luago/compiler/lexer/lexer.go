@@ -10,7 +10,7 @@ import "strings"
 var reNewLine = regexp.MustCompile("\r\n|\n\r|\n|\r")
 var reIdentifier = regexp.MustCompile(`^[_\d\w]+`)
 var reNumber = regexp.MustCompile(`^0[xX][0-9a-fA-F]*(\.[0-9a-fA-F]*)?([pP][+\-]?[0-9]+)?|^[0-9]*(\.[0-9]*)?([eE][+\-]?[0-9]+)?`)
-var reShortStr = regexp.MustCompile(`(?s)(^'(\\'|[^'])*')|(^"(\\"|[^"])*")`)
+var reShortStr = regexp.MustCompile(`(?s)(^'(\\\\|\\'|\\z?\n|[^'\n])*')|(^"(\\\\|\\"|\\z?\n|[^"\n])*")`)
 var reOpeningLongBracket = regexp.MustCompile(`^\[=*\[`)
 
 var reDecEscapeSeq = regexp.MustCompile(`^\\[0-9]{1,3}`)
@@ -345,7 +345,7 @@ func (self *Lexer) escape(str string) string {
 			buf.WriteByte('\f')
 			str = str[2:]
 			continue
-		case 'n':
+		case 'n', '\n':
 			buf.WriteByte('\n')
 			str = str[2:]
 			continue
@@ -392,13 +392,11 @@ func (self *Lexer) escape(str string) string {
 			}
 		case 'u': // \u{XXX}
 			if found := reUnicodeEscapeSeq.FindString(str); found != "" {
-				if len(found) <= 10 {
-					d, _ := strconv.ParseInt(found[3:len(found)-1], 16, 32)
-					if d <= 0x10FFFF {
-						buf.WriteRune(rune(d))
-						str = str[len(found):]
-						continue
-					}
+				d, err := strconv.ParseInt(found[3:len(found)-1], 16, 32)
+				if err == nil && d <= 0x10FFFF {
+					buf.WriteRune(rune(d))
+					str = str[len(found):]
+					continue
 				}
 				self.error("UTF-8 value too large near '%s'", found)
 			}
