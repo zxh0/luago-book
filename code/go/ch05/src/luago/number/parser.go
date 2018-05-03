@@ -17,6 +17,7 @@ func ParseFloat(str string) (float64, bool) {
 
 /*
 var reInteger = regexp.MustCompile(`^[+-]?[0-9]+$|^-?0x[0-9a-f]+$`)
+var reHexFloat = regexp.MustCompile(`^([0-9a-f]+(\.[0-9a-f]*)?|([0-9a-f]*\.[0-9a-f]+))(p[+\-]?[0-9]+)?$`)
 
 func ParseInteger(str string) (int64, bool) {
 	str = strings.TrimSpace(str)
@@ -53,10 +54,16 @@ func ParseInteger(str string) (int64, bool) {
 func ParseFloat(str string) (float64, bool) {
 	str = strings.TrimSpace(str)
 	str = strings.ToLower(str)
-	if strings.HasPrefix(str, "0x") {
+	if strings.Contains(str, "nan") || strings.Contains(str, "inf") {
+		return 0, false
+	}
+	if strings.HasPrefix(str, "0x") && len(str) > 2 {
 		return parseHexFloat(str[2:])
 	}
-	if strings.HasPrefix(str, "-0x") {
+	if strings.HasPrefix(str, "+0x") && len(str) > 3 {
+		return parseHexFloat(str[3:])
+	}
+	if strings.HasPrefix(str, "-0x") && len(str) > 3 {
 		f, ok := parseHexFloat(str[3:])
 		return -f, ok
 	}
@@ -67,6 +74,10 @@ func ParseFloat(str string) (float64, bool) {
 // (0x)ABC.DEFp10
 func parseHexFloat(str string) (float64, bool) {
 	var i16, f16, p10 float64 = 0, 0, 0
+
+	if !reHexFloat.MatchString(str) {
+		return 0, false
+	}
 
 	// decimal exponent
 	if idxOfP := strings.Index(str, "p"); idxOfP > 0 {
