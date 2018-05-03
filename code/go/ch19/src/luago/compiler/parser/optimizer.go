@@ -21,7 +21,7 @@ func optimizeLogicalAnd(exp *BinopExp) Exp {
 	}
 	if isTrue(exp.Exp1) && !isVarargOrFuncCall(exp.Exp2) {
 		return exp.Exp2 // true and x => x
-	} 
+	}
 	return exp
 }
 
@@ -124,11 +124,12 @@ func optimizeUnm(exp *UnopExp) Exp {
 		x.Val = -x.Val
 		return x
 	case *FloatExp:
-		x.Val = -x.Val
-		return x
-	default:
-		return exp
+		if x.Val != 0 {
+			x.Val = -x.Val
+			return x
+		}
 	}
+	return exp
 }
 
 func optimizeNot(exp *UnopExp) Exp {
