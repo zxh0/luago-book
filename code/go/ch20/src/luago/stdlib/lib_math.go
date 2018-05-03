@@ -294,7 +294,11 @@ func mathModf(ls LuaState) int {
 		x := ls.CheckNumber(1)
 		i, f := math.Modf(x)
 		_pushNumInt(ls, i)
-		ls.PushNumber(f)
+		if math.IsInf(x, 0) {
+			ls.PushNumber(0)
+		} else {
+			ls.PushNumber(f)
+		}
 	}
 
 	return 2
