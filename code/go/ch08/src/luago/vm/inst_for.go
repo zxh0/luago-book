@@ -7,6 +7,19 @@ func forPrep(i Instruction, vm LuaVM) {
 	a, sBx := i.AsBx()
 	a += 1
 
+	if vm.Type(a) == LUA_TSTRING {
+		vm.PushNumber(vm.ToNumber(a))
+		vm.Replace(a)
+	}
+	if vm.Type(a+1) == LUA_TSTRING {
+		vm.PushNumber(vm.ToNumber(a + 1))
+		vm.Replace(a + 1)
+	}
+	if vm.Type(a+2) == LUA_TSTRING {
+		vm.PushNumber(vm.ToNumber(a + 2))
+		vm.Replace(a + 2)
+	}
+
 	vm.PushValue(a)
 	vm.PushValue(a + 2)
 	vm.Arith(LUA_OPSUB)
