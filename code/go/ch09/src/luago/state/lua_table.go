@@ -4,8 +4,8 @@ import "math"
 import "luago/number"
 
 type luaTable struct {
-	_map map[luaValue]luaValue
 	arr  []luaValue
+	_map map[luaValue]luaValue
 }
 
 func newLuaTable(nArr, nRec int) *luaTable {
