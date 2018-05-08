@@ -25,9 +25,8 @@ func (self *luaTable) len() int {
 
 func (self *luaTable) get(key luaValue) luaValue {
 	key = _floatToIntger(key)
-	if idx, ok := key.(int64); ok && idx >= 1 {
-		arrLen := int64(len(self.arr))
-		if idx <= arrLen {
+	if idx, ok := key.(int64); ok {
+		if idx >= 1 && idx <= int64(len(self.arr)) {
 			return self.arr[idx-1]
 		}
 	}
