@@ -5,8 +5,8 @@ import "luago/number"
 
 type luaTable struct {
 	metatable *luaTable
-	_map      map[luaValue]luaValue
 	arr       []luaValue
+	_map      map[luaValue]luaValue
 	keys      []luaValue // used by next()
 }
 
