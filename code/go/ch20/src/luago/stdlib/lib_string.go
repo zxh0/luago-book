@@ -288,11 +288,7 @@ func strFind(ls LuaState) int {
 		ls.PushNil()
 		return 1
 	}
-
-	plain := false
-	if ls.IsBoolean(4) {
-		plain = ls.ToBoolean(4)
-	}
+	plain := ls.ToBoolean(4)
 
 	start, end := find(s, pattern, init, plain)
 
