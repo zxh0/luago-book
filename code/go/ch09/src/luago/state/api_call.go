@@ -48,6 +48,7 @@ func (self *luaState) callGoClosure(nArgs, nResults int, c *closure) {
 	// return results
 	if nResults != 0 {
 		results := newStack.popN(r)
+		self.stack.check(len(results))
 		self.stack.pushN(results, nResults)
 	}
 }
