@@ -229,8 +229,11 @@ func prepFuncCall(fi *funcInfo, node *FuncCallExp, a int) int {
 	cgExp(fi, node.PrefixExp, a, 1)
 	if node.NameExp != nil {
 		fi.allocReg()
-		c, _ := expToOpArg(fi, node.NameExp, ARG_RK)
+		c, k := expToOpArg(fi, node.NameExp, ARG_RK)
 		fi.emitSelf(node.Line, a, a, c)
+		if k == ARG_REG {
+			fi.freeRegs(1)
+		}
 	}
 	for i, arg := range node.Args {
 		tmp := fi.allocReg()
