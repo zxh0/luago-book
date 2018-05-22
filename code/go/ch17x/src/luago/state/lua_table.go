@@ -5,9 +5,11 @@ import "luago/number"
 
 type luaTable struct {
 	metatable *luaTable
-	_map      map[luaValue]luaValue
 	arr       []luaValue
-	keys      []luaValue // used by next()
+	_map      map[luaValue]luaValue
+	keys      map[luaValue]luaValue // used by next()
+	lastKey   luaValue              // used by next()
+	changed   bool                  // used by next()
 }
 
 func newLuaTable(nArr, nRec int) *luaTable {
@@ -32,9 +34,8 @@ func (self *luaTable) len() int {
 
 func (self *luaTable) get(key luaValue) luaValue {
 	key = _floatToIntger(key)
-	if idx, ok := key.(int64); ok && idx >= 1 {
-		arrLen := int64(len(self.arr))
-		if idx <= arrLen {
+	if idx, ok := key.(int64); ok {
+		if idx >= 1 && idx <= int64(len(self.arr)) {
 			return self.arr[idx-1]
 		}
 	}
@@ -58,6 +59,7 @@ func (self *luaTable) put(key, val luaValue) {
 		panic("table index is NaN!")
 	}
 
+	self.changed = true
 	key = _floatToIntger(key)
 	if idx, ok := key.(int64); ok && idx >= 1 {
 		arrLen := int64(len(self.arr))
@@ -107,25 +109,33 @@ func (self *luaTable) _expandArray() {
 }
 
 func (self *luaTable) nextKey(key luaValue) luaValue {
-	if key == nil {
+	if self.keys == nil || (key == nil && self.changed) {
 		self.initKeys()
+		self.changed = false
 	}
-	if len(self.keys) > 0 {
-		kextKey := self.keys[0]
-		self.keys = self.keys[1:]
-		return kextKey
+
+	nextKey := self.keys[key]
+	if nextKey == nil && key != nil && key != self.lastKey {
+		panic("invalid key to 'next'")
 	}
-	return nil
+
+	return nextKey
 }
 
 func (self *luaTable) initKeys() {
-	self.keys = nil
+	self.keys = make(map[luaValue]luaValue)
+	var key luaValue = nil
 	for i, v := range self.arr {
 		if v != nil {
-			self.keys = append(self.keys, int64(i+1))
+			self.keys[key] = int64(i + 1)
+			key = int64(i + 1)
 		}
 	}
-	for k, _ := range self._map {
-		self.keys = append(self.keys, k)
+	for k, v := range self._map {
+		if v != nil {
+			self.keys[key] = k
+			key = k
+		}
 	}
+	self.lastKey = key
 }
