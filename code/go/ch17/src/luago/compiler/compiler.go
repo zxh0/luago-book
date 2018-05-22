@@ -4,7 +4,7 @@ import "luago/binchunk"
 import "luago/compiler/codegen"
 import "luago/compiler/parser"
 
-func Compile(source, chunk string) *binchunk.Prototype {
-	ast := parser.Parse(source, chunk)
+func Compile(chunk, chunkName string) *binchunk.Prototype {
+	ast := parser.Parse(chunk, chunkName)
 	return codegen.GenProto(ast)
 }
