@@ -12,7 +12,7 @@ func (self *luaState) Load(chunk []byte, chunkName, mode string) int {
 	if binchunk.IsBinaryChunk(chunk) {
 		proto = binchunk.Undump(chunk)
 	} else {
-		proto = compiler.Compile(chunkName, string(chunk))
+		proto = compiler.Compile(string(chunk), chunkName)
 	}
 
 	c := newLuaClosure(proto)
@@ -71,6 +71,7 @@ func (self *luaState) callGoClosure(nArgs, nResults int, c *closure) {
 	// return results
 	if nResults != 0 {
 		results := newStack.popN(r)
+		self.stack.check(len(results))
 		self.stack.pushN(results, nResults)
 	}
 }
