@@ -4,17 +4,16 @@ import "luago/binchunk"
 import "luago/compiler/codegen"
 import "luago/compiler/parser"
 
-func Compile(source, chunk string) *binchunk.Prototype {
-	ast := parser.Parse(source, chunk)
+func Compile(chunk, chunkName string) *binchunk.Prototype {
+	ast := parser.Parse(chunk, chunkName)
 	proto := codegen.GenProto(ast)
-	setSource(proto, source) // todo
+	setSource(proto, chunkName)
 	return proto
 }
 
-// todo
-func setSource(proto *binchunk.Prototype, source string) {
-	proto.Source = "@" + source
+func setSource(proto *binchunk.Prototype, chunkName string) {
+	proto.Source = chunkName
 	for _, f := range proto.Protos {
-		setSource(f, source)
+		setSource(f, chunkName)
 	}
 }
