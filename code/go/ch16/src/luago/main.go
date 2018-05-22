@@ -12,12 +12,12 @@ func main() {
 			panic(err)
 		}
 
-		testParser(os.Args[1], string(data))
+		testParser(string(data), os.Args[1])
 	}
 }
 
-func testParser(source, chunk string) {
-	ast := parser.Parse(source, chunk)
+func testParser(chunk, chunkName string) {
+	ast := parser.Parse(chunk, chunkName)
 	b, err := json.Marshal(ast)
 	if err != nil {
 		panic(err)
