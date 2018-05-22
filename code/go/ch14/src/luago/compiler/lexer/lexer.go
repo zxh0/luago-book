@@ -18,16 +18,16 @@ var reHexEscapeSeq = regexp.MustCompile(`^\\x[0-9a-fA-F]{2}`)
 var reUnicodeEscapeSeq = regexp.MustCompile(`^\\u\{[0-9a-fA-F]+\}`)
 
 type Lexer struct {
-	source        string // source name
 	chunk         string // source code
+	chunkName     string // source name
 	line          int    // current line number
 	nextToken     string
 	nextTokenKind int
 	nextTokenLine int
 }
 
-func NewLexer(source string, chunk string) *Lexer {
-	return &Lexer{source, chunk, 1, "", 0, 0}
+func NewLexer(chunk, chunkName string) *Lexer {
+	return &Lexer{chunk, chunkName, 1, "", 0, 0}
 }
 
 func (self *Lexer) Line() int {
@@ -224,7 +224,7 @@ func (self *Lexer) test(s string) bool {
 
 func (self *Lexer) error(f string, a ...interface{}) {
 	err := fmt.Sprintf(f, a...)
-	err = fmt.Sprintf("%s:%d: %s", self.source, self.line, err)
+	err = fmt.Sprintf("%s:%d: %s", self.chunkName, self.line, err)
 	panic(err)
 }
 
