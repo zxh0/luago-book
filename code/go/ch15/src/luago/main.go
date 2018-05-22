@@ -12,12 +12,12 @@ func main() {
 			panic(err)
 		}
 
-		testLexer(os.Args[1], string(data))
+		testLexer(string(data), os.Args[1])
 	}
 }
 
-func testLexer(source, chunk string) {
-	lexer := NewLexer(source, chunk)
+func testLexer(chunk, chunkName string) {
+	lexer := NewLexer(chunk, chunkName)
 	for {
 		line, kind, token := lexer.NextToken()
 		fmt.Printf("[%2d] [%-10s] %s\n",
