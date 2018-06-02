@@ -80,7 +80,7 @@ func (self *luaState) CheckNumber(arg int) float64 {
 // http://www.lua.org/manual/5.3/manual.html#luaL_checkstring
 // http://www.lua.org/manual/5.3/manual.html#luaL_checklstring
 func (self *luaState) CheckString(arg int) string {
-	s, ok := self.ToString(arg)
+	s, ok := self.ToStringX(arg)
 	if !ok {
 		self.tagError(arg, LUA_TSTRING)
 	}
@@ -335,7 +335,7 @@ func (self *luaState) tagError(arg int, tag LuaType) {
 func (self *luaState) typeError(arg int, tname string) int {
 	var typeArg string /* name for the type of the actual argument */
 	if self.GetMetafield(arg, "__name") == LUA_TSTRING {
-		typeArg, _ = self.ToString(-1) /* use the given type name */
+		typeArg = self.ToString(-1) /* use the given type name */
 	} else if self.Type(arg) == LUA_TLIGHTUSERDATA {
 		typeArg = "light userdata" /* special name for messages */
 	} else {
