@@ -33,8 +33,7 @@ func print(ls LuaState) int {
 		if ls.IsBoolean(i) {
 			fmt.Printf("%t", ls.ToBoolean(i))
 		} else if ls.IsString(i) {
-			s, _ := ls.ToString(i)
-			fmt.Print(s)
+			fmt.Print(ls.ToString(i))
 		} else {
 			fmt.Print(ls.TypeName(ls.Type(i)))
 		}

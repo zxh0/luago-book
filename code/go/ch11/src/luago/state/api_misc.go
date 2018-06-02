@@ -24,8 +24,8 @@ func (self *luaState) Concat(n int) {
 	} else if n >= 2 {
 		for i := 1; i < n; i++ {
 			if self.IsString(-1) && self.IsString(-2) {
-				s2, _ := self.ToString(-1)
-				s1, _ := self.ToString(-2)
+				s2 := self.ToString(-1)
+				s1 := self.ToString(-2)
 				self.stack.pop()
 				self.stack.pop()
 				self.stack.push(s1 + s2)

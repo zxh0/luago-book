@@ -48,8 +48,7 @@ func printStack(ls LuaState) {
 		case LUA_TNUMBER:
 			fmt.Printf("[%g]", ls.ToNumber(i))
 		case LUA_TSTRING:
-			s, _ := ls.ToString(i)
-			fmt.Printf("[%q]", s)
+			fmt.Printf("[%q]", ls.ToString(i))
 		default: // other values
 			fmt.Printf("[%s]", ls.TypeName(t))
 		}

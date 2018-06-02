@@ -42,7 +42,8 @@ type LuaState interface {
 	ToIntegerX(idx int) (int64, bool)
 	ToNumber(idx int) float64
 	ToNumberX(idx int) (float64, bool)
-	ToString(idx int) (string, bool)
+	ToString(idx int) string
+	ToStringX(idx int) (string, bool)
 	ToGoFunction(idx int) GoFunction
 	RawLen(idx int) uint
 	/* push functions (Go -> stack) */
