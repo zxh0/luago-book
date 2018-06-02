@@ -83,7 +83,7 @@ func preloadSearcher(ls LuaState) int {
 func luaSearcher(ls LuaState) int {
 	name := ls.CheckString(1)
 	ls.GetField(LuaUpvalueIndex(1), "path")
-	path, ok := ls.ToString(-1)
+	path, ok := ls.ToStringX(-1)
 	if !ok {
 		ls.Error2("'package.path' must be a string")
 	}
