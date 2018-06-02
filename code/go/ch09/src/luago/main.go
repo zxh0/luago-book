@@ -15,7 +15,7 @@ func main() {
 
 		ls := state.New()
 		ls.Register("print", print)
-		ls.Load(data, "chunk", "b")
+		ls.Load(data, os.Args[1], "b")
 		ls.Call(0, 0)
 	}
 }
@@ -26,8 +26,7 @@ func print(ls LuaState) int {
 		if ls.IsBoolean(i) {
 			fmt.Printf("%t", ls.ToBoolean(i))
 		} else if ls.IsString(i) {
-			s, _ := ls.ToString(i)
-			fmt.Print(s)
+			fmt.Print(ls.ToString(i))
 		} else {
 			fmt.Print(ls.TypeName(ls.Type(i)))
 		}

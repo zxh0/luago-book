@@ -12,7 +12,7 @@ func main() {
 		}
 
 		ls := state.New()
-		ls.Load(data, "chunk", "b")
+		ls.Load(data, os.Args[1], "b")
 		ls.Call(0, 0)
 	}
 }
