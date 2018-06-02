@@ -131,7 +131,7 @@ func tabConcat(ls LuaState) int {
 			ls.Error2("invalid value (%s) at index %d in table for 'concat'",
 				ls.TypeName2(-1), i)
 		}
-		buf[k-i], _ = ls.ToString(-1)
+		buf[k-i] = ls.ToString(-1)
 		ls.Pop(1)
 	}
 	ls.PushString(strings.Join(buf, sep))
