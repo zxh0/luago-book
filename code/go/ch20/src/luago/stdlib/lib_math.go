@@ -74,8 +74,11 @@ func mathRandom(ls LuaState) int {
 	ls.ArgCheck(low <= up, 1, "interval is empty")
 	ls.ArgCheck(low >= 0 || up <= math.MaxInt64+low, 1,
 		"interval too large")
-	r := low + rand.Int63n(up-low)
-	ls.PushInteger(r)
+	if up-low == math.MaxInt64 {
+		ls.PushInteger(low + rand.Int63())
+	} else {
+		ls.PushInteger(low + rand.Int63n(up-low+1))
+	}
 	return 1
 }
 
