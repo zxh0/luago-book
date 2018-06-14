@@ -76,7 +76,10 @@ cd ../ch19; export GOPATH=$PWD; go install luago
 ./bin/luago ../../lua/ch19/examples.lua | grep -q "2018"
 
 cd ../ch20; export GOPATH=$PWD; go install luago
-
+go20=$PWD
+cd ../../lua/ch20
+$go20/bin/luago test.lua | tr -d '\n' | grep -q "foobar"
+cd $go20
 
 cd ../ch21; export GOPATH=$PWD; go install luago
 
