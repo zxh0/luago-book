@@ -175,15 +175,15 @@ func baseNext(ls LuaState) int {
 // lua-5.3.4/src/lbaselib.c#luaB_load()
 func baseLoad(ls LuaState) int {
 	var status int
-	s, isStr := ls.ToStringX(1)
+	chunk, isStr := ls.ToStringX(1)
 	mode := ls.OptString(3, "bt")
 	env := 0 /* 'env' index or 0 if no 'env' */
 	if !ls.IsNone(4) {
 		env = 4
 	}
 	if isStr { /* loading a string? */
-		chunkname := ls.OptString(2, s)
-		status = ls.Load([]byte(s), chunkname, mode)
+		chunkname := ls.OptString(2, chunk)
+		status = ls.Load([]byte(chunk), chunkname, mode)
 	} else { /* loading from a reader function */
 		panic("loading from a reader function") // todo
 	}
