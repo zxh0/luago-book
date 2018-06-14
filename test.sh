@@ -82,5 +82,6 @@ $go20/bin/luago test.lua | tr -d '\n' | grep -q "foobar"
 cd $go20
 
 cd ../ch21; export GOPATH=$PWD; go install luago
+./bin/luago ../../lua/ch21/test.lua | tr -d '\n,' | grep -q "bcacbacabacbbacabc" 
 
 echo OK
