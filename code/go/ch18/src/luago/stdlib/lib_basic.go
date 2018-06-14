@@ -222,15 +222,13 @@ func baseLoadFile(ls LuaState) int {
 // http://www.lua.org/manual/5.3/manual.html#pdf-dofile
 // lua-5.3.4/src/lbaselib.c#luaB_dofile()
 func baseDoFile(ls LuaState) int {
-	fname := ls.OptString(1, "")
+	fname := ls.OptString(1, "bt")
 	ls.SetTop(1)
 	if ls.LoadFile(fname) != LUA_OK {
-		//return lua_error(L);
-		panic("todo!")
+		return ls.Error()
 	}
-	//ls.CallK(0, LUA_MULTRET, 0, dofilecont);
-	//return dofilecont(L, 0, 0);
-	panic("todo!")
+	ls.Call(0, LUA_MULTRET)
+	return ls.GetTop() - 1
 }
 
 // pcall (f [, arg1, ···])
