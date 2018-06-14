@@ -30,6 +30,10 @@ func (self *luaState) Resume(from LuaState, nArgs int) int {
 		}()
 	} else {
 		// resume coroutine
+		if self.coStatus != LUA_YIELD { // todo
+			self.stack.push("cannot resume non-suspended coroutine")
+			return LUA_ERRRUN
+		}
 		self.coStatus = LUA_OK
 		self.coChan <- 1
 	}
@@ -41,6 +45,9 @@ func (self *luaState) Resume(from LuaState, nArgs int) int {
 // [-?, +?, e]
 // http://www.lua.org/manual/5.3/manual.html#lua_yield
 func (self *luaState) Yield(nResults int) int {
+	if self.coCaller == nil { // todo
+		panic("attempt to yield from outside a coroutine")
+	}
 	self.coStatus = LUA_YIELD
 	self.coCaller.coChan <- 1
 	<-self.coChan
