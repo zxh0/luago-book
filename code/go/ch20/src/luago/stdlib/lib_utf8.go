@@ -68,7 +68,7 @@ func utfByteOffset(ls LuaState) int {
 			i--
 		}
 	} else {
-		if _isCont(s[i]) {
+		if i < sLen && _isCont(s[i]) {
 			ls.Error2("initial position is a continuation byte")
 		}
 		if n < 0 {
@@ -86,7 +86,7 @@ func utfByteOffset(ls LuaState) int {
 			for n > 0 && i < sLen {
 				for { /* find beginning of next character */
 					i++
-					if !(_isCont(s[i])) {
+					if i >= sLen || !_isCont(s[i]) {
 						break /* (cannot pass final '\0') */
 					}
 				}
