@@ -236,19 +236,15 @@ func baseDoFile(ls LuaState) int {
 func basePCall(ls LuaState) int {
 	nArgs := ls.GetTop() - 1
 	status := ls.PCall(nArgs, -1, 0)
-	if status == LUA_OK {
-		ls.PushBoolean(true)
-	} else {
-		ls.PushBoolean(false)
-	}
-	ls.Rotate(1, 1)
+	ls.PushBoolean(status == LUA_OK)
+	ls.Insert(1)
 	return ls.GetTop()
 }
 
 // xpcall (f, msgh [, arg1, ···])
 // http://www.lua.org/manual/5.3/manual.html#pdf-xpcall
 func baseXPCall(ls LuaState) int {
-	panic("todo! baseXPCall")
+	panic("todo!")
 }
 
 // getmetatable (object)
