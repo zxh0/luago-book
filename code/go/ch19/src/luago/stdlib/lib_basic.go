@@ -175,15 +175,15 @@ func baseNext(ls LuaState) int {
 // lua-5.3.4/src/lbaselib.c#luaB_load()
 func baseLoad(ls LuaState) int {
 	var status int
-	s, isStr := ls.ToStringX(1)
+	chunk, isStr := ls.ToStringX(1)
 	mode := ls.OptString(3, "bt")
 	env := 0 /* 'env' index or 0 if no 'env' */
 	if !ls.IsNone(4) {
 		env = 4
 	}
 	if isStr { /* loading a string? */
-		chunkname := ls.OptString(2, s)
-		status = ls.Load([]byte(s), chunkname, mode)
+		chunkname := ls.OptString(2, chunk)
+		status = ls.Load([]byte(chunk), chunkname, mode)
 	} else { /* loading from a reader function */
 		panic("loading from a reader function") // todo
 	}
@@ -222,15 +222,13 @@ func baseLoadFile(ls LuaState) int {
 // http://www.lua.org/manual/5.3/manual.html#pdf-dofile
 // lua-5.3.4/src/lbaselib.c#luaB_dofile()
 func baseDoFile(ls LuaState) int {
-	fname := ls.OptString(1, "")
+	fname := ls.OptString(1, "bt")
 	ls.SetTop(1)
 	if ls.LoadFile(fname) != LUA_OK {
-		//return lua_error(L);
-		panic("todo!")
+		return ls.Error()
 	}
-	//ls.CallK(0, LUA_MULTRET, 0, dofilecont);
-	//return dofilecont(L, 0, 0);
-	panic("todo!")
+	ls.Call(0, LUA_MULTRET)
+	return ls.GetTop() - 1
 }
 
 // pcall (f [, arg1, ···])
@@ -238,19 +236,15 @@ func baseDoFile(ls LuaState) int {
 func basePCall(ls LuaState) int {
 	nArgs := ls.GetTop() - 1
 	status := ls.PCall(nArgs, -1, 0)
-	if status == LUA_OK {
-		ls.PushBoolean(true)
-	} else {
-		ls.PushBoolean(false)
-	}
-	ls.Rotate(1, 1)
+	ls.PushBoolean(status == LUA_OK)
+	ls.Insert(1)
 	return ls.GetTop()
 }
 
 // xpcall (f, msgh [, arg1, ···])
 // http://www.lua.org/manual/5.3/manual.html#pdf-xpcall
 func baseXPCall(ls LuaState) int {
-	panic("todo! baseXPCall")
+	panic("todo!")
 }
 
 // getmetatable (object)
