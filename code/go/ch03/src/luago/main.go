@@ -57,12 +57,12 @@ func printCode(f *binchunk.Prototype) {
 
 		i := Instruction(c)
 		fmt.Printf("\t%d\t[%s]\t%s \t", pc+1, line, i.OpName())
-		printOprands(i)
+		printOperands(i)
 		fmt.Printf("\n")
 	}
 }
 
-func printOprands(i Instruction) {
+func printOperands(i Instruction) {
 	switch i.OpMode() {
 	case IABC:
 		a, b, c := i.ABC()
