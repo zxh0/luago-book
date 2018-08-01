@@ -351,7 +351,7 @@ func baseToNumber(ls LuaState) int {
 			return 1
 		} else {
 			if s, ok := ls.ToStringX(1); ok {
-				if ok && ls.StringToNumber(s) {
+				if ls.StringToNumber(s) {
 					return 1 /* successful conversion to number */
 				} /* else not a number */
 			}
