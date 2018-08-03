@@ -47,6 +47,7 @@ public interface LuaState {
     void pushNumber(double n);
     void pushString(String s);
     void pushJavaFunction(JavaFunction f);
+    void pushJavaClosure(JavaFunction f, int n);
     void pushGlobalTable();
     /* comparison and arithmetic functions */
     void arith(ArithOp op);
