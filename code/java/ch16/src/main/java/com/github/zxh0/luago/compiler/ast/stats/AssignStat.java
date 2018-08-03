@@ -14,4 +14,11 @@ public class AssignStat extends Stat {
     private List<Exp> varList;
     private List<Exp> expList;
 
+    public AssignStat(int lastLine,
+                      List<Exp> varList, List<Exp> expList) {
+        setLastLine(lastLine);
+        this.varList = varList;
+        this.expList = expList;
+    }
+
 }

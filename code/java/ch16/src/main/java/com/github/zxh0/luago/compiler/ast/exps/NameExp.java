@@ -10,4 +10,9 @@ public class NameExp extends PrefixExp {
 
     private String name;
 
+    public NameExp(int line, String name) {
+        setLine(line);
+        this.name = name;
+    }
+
 }

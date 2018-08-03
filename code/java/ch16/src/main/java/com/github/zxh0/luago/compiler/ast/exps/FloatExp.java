@@ -10,4 +10,9 @@ public class FloatExp extends Exp {
 
     private double val;
 
+    public FloatExp(int line, Double val) {
+        setLine(line);
+        this.val = val;
+    }
+
 }

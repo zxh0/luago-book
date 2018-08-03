@@ -13,4 +13,9 @@ public class WhileStat extends Stat {
     private Exp exp;
     private Block block;
 
+    public WhileStat(Exp exp, Block block) {
+        this.exp = exp;
+        this.block = block;
+    }
+
 }

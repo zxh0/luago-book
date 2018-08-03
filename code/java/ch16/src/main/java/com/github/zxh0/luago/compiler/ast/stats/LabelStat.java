@@ -10,4 +10,8 @@ public class LabelStat extends Stat {
 
     private String name;
 
+    public LabelStat(String name) {
+        this.name = name;
+    }
+
 }

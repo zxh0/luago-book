@@ -13,4 +13,9 @@ public class RepeatStat extends Stat {
     private Block block;
     private Exp exp;
 
+    public RepeatStat(Block block, Exp exp) {
+        this.block = block;
+        this.exp = exp;
+    }
+
 }
