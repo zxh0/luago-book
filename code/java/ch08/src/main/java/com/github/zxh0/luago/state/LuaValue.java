@@ -18,6 +18,8 @@ class LuaValue {
             return LUA_TSTRING;
         } else if (val instanceof LuaTable) {
             return LUA_TTABLE;
+        } else if (val instanceof Closure) {
+            return LUA_TFUNCTION;
         } else {
             throw new RuntimeException("TODO");
         }
