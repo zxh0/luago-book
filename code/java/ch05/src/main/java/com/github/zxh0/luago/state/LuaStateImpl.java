@@ -1,8 +1,11 @@
 package com.github.zxh0.luago.state;
 
+import com.github.zxh0.luago.api.ArithOp;
+import com.github.zxh0.luago.api.CmpOp;
 import com.github.zxh0.luago.api.LuaState;
 import com.github.zxh0.luago.api.LuaType;
 
+import static com.github.zxh0.luago.api.ArithOp.*;
 import static com.github.zxh0.luago.api.LuaType.*;
 
 public class LuaStateImpl implements LuaState {
@@ -237,6 +240,68 @@ public class LuaStateImpl implements LuaState {
     @Override
     public void pushString(String s) {
         stack.push(s);
+    }
+
+    /* comparison and arithmetic functions */
+
+    @Override
+    public void arith(ArithOp op) {
+        Object b = stack.pop();
+        Object a = op != LUA_OPUNM && op != LUA_OPBNOT ? stack.pop() : b;
+        Object result = Arithmetic.arith(a, b, op);
+        if (result != null) {
+            stack.push(result);
+        } else {
+            throw new RuntimeException("arithmetic error!");
+        }
+    }
+
+    @Override
+    public boolean compare(int idx1, int idx2, CmpOp op) {
+        if (!stack.isValid(idx1) || !stack.isValid(idx2)) {
+            return false;
+        }
+
+        Object a = stack.get(idx1);
+        Object b = stack.get(idx2);
+        switch (op) {
+            case LUA_OPEQ: return Comparison.eq(a, b);
+            case LUA_OPLT: return Comparison.lt(a, b);
+            case LUA_OPLE: return Comparison.le(a, b);
+            default: throw new RuntimeException("invalid compare op!");
+        }
+    }
+
+    /* miscellaneous functions */
+
+    @Override
+    public void len(int idx) {
+        Object val = stack.get(idx);
+        if (val instanceof String) {
+            pushInteger(((String) val).length());
+        } else {
+            throw new RuntimeException("length error!");
+        }
+    }
+
+    @Override
+    public void concat(int n) {
+        if (n == 0) {
+            stack.push("");
+        } else if (n >= 2) {
+            for (int i = 1; i < n; i++) {
+                if (isString(-1) && isString(-2)) {
+                    String s2 = toString(-1);
+                    String s1 = toString(-2);
+                    pop(2);
+                    pushString(s1 + s2);
+                    continue;
+                }
+
+                throw new RuntimeException("concatenation error!");
+            }
+        }
+        // n == 1, do nothing
     }
 
 }
