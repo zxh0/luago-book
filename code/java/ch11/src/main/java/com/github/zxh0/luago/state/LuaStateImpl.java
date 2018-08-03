@@ -39,6 +39,49 @@ public class LuaStateImpl implements LuaState, LuaVM {
         top.prev = null;
     }
 
+
+    /* metatable */
+
+    private LuaTable getMetatable(Object val) {
+        if (val instanceof LuaTable) {
+            return ((LuaTable) val).metatable;
+        }
+        String key = "_MT" + LuaValue.typeOf(val);
+        Object mt = registry.get(key);
+        return mt != null ? (LuaTable) mt : null;
+    }
+
+    private void setMetatable(Object val, LuaTable mt) {
+        if (val instanceof LuaTable) {
+            ((LuaTable) val).metatable = mt;
+            return;
+        }
+        String key = "_MT" + LuaValue.typeOf(val);
+        registry.put(key, mt);
+    }
+
+    private Object getMetafield(Object val, String fieldName) {
+        LuaTable mt = getMetatable(val);
+        return mt != null ? mt.get(fieldName) : null;
+    }
+
+    Object getMetamethod(Object a, Object b, String mmName) {
+        Object mm = getMetafield(a, mmName);
+        if (mm == null) {
+            mm = getMetafield(b, mmName);
+        }
+        return mm;
+    }
+
+    Object callMetamethod(Object a, Object b, Object mm) {
+        //stack.check(4)
+        stack.push(mm);
+        stack.push(a);
+        stack.push(b);
+        call(2, 1);
+        return stack.pop();
+    }
+
     /* basic stack manipulation */
 
     @Override
@@ -257,6 +300,18 @@ public class LuaStateImpl implements LuaState, LuaVM {
                 : null;
     }
 
+    @Override
+    public int rawLen(int idx) {
+        Object val = stack.get(idx);
+        if (val instanceof String) {
+            return ((String) val).length();
+        } else if (val instanceof LuaTable) {
+            return ((LuaTable) val).length();
+        } else {
+            return 0;
+        }
+    }
+
     /* push functions (Go -> stack); */
 
     @Override
@@ -310,12 +365,8 @@ public class LuaStateImpl implements LuaState, LuaVM {
     public void arith(ArithOp op) {
         Object b = stack.pop();
         Object a = op != LUA_OPUNM && op != LUA_OPBNOT ? stack.pop() : b;
-        Object result = Arithmetic.arith(a, b, op);
-        if (result != null) {
-            stack.push(result);
-        } else {
-            throw new RuntimeException("arithmetic error!");
-        }
+        Object result = Arithmetic.arith(a, b, op, this);
+        stack.push(result);
     }
 
     @Override
@@ -327,11 +378,22 @@ public class LuaStateImpl implements LuaState, LuaVM {
         Object a = stack.get(idx1);
         Object b = stack.get(idx2);
         switch (op) {
-            case LUA_OPEQ: return Comparison.eq(a, b);
-            case LUA_OPLT: return Comparison.lt(a, b);
-            case LUA_OPLE: return Comparison.le(a, b);
+            case LUA_OPEQ: return Comparison.eq(a, b, this);
+            case LUA_OPLT: return Comparison.lt(a, b, this);
+            case LUA_OPLE: return Comparison.le(a, b, this);
             default: throw new RuntimeException("invalid compare op!");
         }
+    }
+
+    @Override
+    public boolean rawEqual(int idx1, int idx2) {
+        if (!stack.isValid(idx1) || !stack.isValid(idx2)) {
+            return false;
+        }
+
+        Object a = stack.get(idx1);
+        Object b = stack.get(idx2);
+        return Comparison.eq(a, b, null);
     }
 
     /* get functions (Lua -> stack) */
@@ -350,32 +412,72 @@ public class LuaStateImpl implements LuaState, LuaVM {
     public LuaType getTable(int idx) {
         Object t = stack.get(idx);
         Object k = stack.pop();
-        return getTable(t, k);
+        return getTable(t, k, false);
     }
 
     @Override
     public LuaType getField(int idx, String k) {
         Object t = stack.get(idx);
-        return getTable(t, k);
+        return getTable(t, k, false);
     }
 
     @Override
     public LuaType getI(int idx, long i) {
         Object t = stack.get(idx);
-        return getTable(t, i);
+        return getTable(t, i, false);
+    }
+
+    @Override
+    public LuaType rawGet(int idx) {
+        Object t = stack.get(idx);
+        Object k = stack.pop();
+        return getTable(t, k, true);
+    }
+
+    @Override
+    public LuaType rawGetI(int idx, long i) {
+        Object t = stack.get(idx);
+        return getTable(t, i, true);
     }
 
     @Override
     public LuaType getGlobal(String name) {
         Object t = registry.get(LUA_RIDX_GLOBALS);
-        return getTable(t, name);
+        return getTable(t, name, false);
     }
 
-    private LuaType getTable(Object t, Object k) {
+    @Override
+    public boolean getMetatable(int idx) {
+        Object val = stack.get(idx);
+        Object mt = getMetatable(val);
+        if (mt != null) {
+            stack.push(mt);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private LuaType getTable(Object t, Object k, boolean raw) {
         if (t instanceof LuaTable) {
-            Object v = ((LuaTable) t).get(k);
-            stack.push(v);
-            return LuaValue.typeOf(v);
+            LuaTable tbl = (LuaTable) t;
+            Object v = tbl.get(k);
+            if (raw || v != null || !tbl.hasMetafield("__index")) {
+                stack.push(v);
+                return LuaValue.typeOf(v);
+            }
+        }
+        if (!raw) {
+            Object mf = getMetafield(t, "__index");
+            if (mf != null) {
+                if (mf instanceof LuaTable) {
+                    return getTable(mf, k, false);
+                } else if (mf instanceof Closure) {
+                    Object v = callMetamethod(t, k, mf);
+                    stack.push(v);
+                    return LuaValue.typeOf(v);
+                }
+            }
         }
         throw new RuntimeException("not a table!"); // todo
     }
@@ -387,28 +489,43 @@ public class LuaStateImpl implements LuaState, LuaVM {
         Object t = stack.get(idx);
         Object v = stack.pop();
         Object k = stack.pop();
-        setTable(t, k, v);
+        setTable(t, k, v, false);
     }
 
     @Override
     public void setField(int idx, String k) {
         Object t = stack.get(idx);
         Object v = stack.pop();
-        setTable(t, k, v);
+        setTable(t, k, v, false);
     }
 
     @Override
     public void setI(int idx, long i) {
         Object t = stack.get(idx);
         Object v = stack.pop();
-        setTable(t, i, v);
+        setTable(t, i, v, false);
+    }
+
+    @Override
+    public void rawSet(int idx) {
+        Object t = stack.get(idx);
+        Object v = stack.pop();
+        Object k = stack.pop();
+        setTable(t, k, v, true);
+    }
+
+    @Override
+    public void rawSetI(int idx, long i) {
+        Object t = stack.get(idx);
+        Object v = stack.pop();
+        setTable(t, i, v, true);
     }
 
     @Override
     public void setGlobal(String name) {
         Object t = registry.get(LUA_RIDX_GLOBALS);
         Object v = stack.pop();
-        setTable(t, name, v);
+        setTable(t, name, v, false);
     }
 
     @Override
@@ -417,10 +534,44 @@ public class LuaStateImpl implements LuaState, LuaVM {
         setGlobal(name);
     }
 
-    private void setTable(Object t, Object k, Object v) {
+    @Override
+    public void setMetatable(int idx) {
+        Object val = stack.get(idx);
+        Object mtVal = stack.pop();
+
+        if (mtVal == null) {
+            setMetatable(val, null);
+        } else if (mtVal instanceof LuaTable) {
+            setMetatable(val, (LuaTable) mtVal);
+        } else {
+            throw new RuntimeException("table expected!"); // todo
+        }
+    }
+
+    private void setTable(Object t, Object k, Object v, boolean raw) {
         if (t instanceof LuaTable) {
-            ((LuaTable) t).put(k, v);
-            return;
+            LuaTable tbl = (LuaTable) t;
+            if (raw || tbl.get(k) != null || !tbl.hasMetafield("__newindex")) {
+                tbl.put(k, v);
+                return;
+            }
+        }
+        if (!raw) {
+            Object mf = getMetafield(t, "__newindex");
+            if (mf != null) {
+                if (mf instanceof LuaTable) {
+                    setTable(mf, k, v, false);
+                    return;
+                }
+                if (mf instanceof Closure) {
+                    stack.push(mf);
+                    stack.push(t);
+                    stack.push(k);
+                    stack.push(v);
+                    call(3, 0);
+                    return;
+                }
+            }
         }
         throw new RuntimeException("not a table!");
     }
@@ -442,8 +593,20 @@ public class LuaStateImpl implements LuaState, LuaVM {
     @Override
     public void call(int nArgs, int nResults) {
         Object val = stack.get(-(nArgs + 1));
-        if (val instanceof Closure) {
-            Closure c = (Closure) val;
+        Object f = val instanceof Closure ? val : null;
+
+        if (f == null) {
+            Object mf = getMetafield(val, "__call");
+            if (mf != null && mf instanceof Closure) {
+                stack.push(f);
+                insert(-(nArgs + 2));
+                nArgs += 1;
+                f = mf;
+            }
+        }
+
+        if (f != null) {
+            Closure c = (Closure) f;
             if (c.proto != null) {
                 callLuaClosure(nArgs, nResults, c);
             } else {
@@ -527,11 +690,18 @@ public class LuaStateImpl implements LuaState, LuaVM {
         Object val = stack.get(idx);
         if (val instanceof String) {
             pushInteger(((String) val).length());
-        } else if (val instanceof LuaTable) {
-            pushInteger(((LuaTable) val).length());
-        } else {
-            throw new RuntimeException("length error!");
+            return;
         }
+        Object mm = getMetamethod(val, val, "__len");
+        if (mm != null) {
+            stack.push(callMetamethod(val, val, mm));
+            return;
+        }
+        if (val instanceof LuaTable) {
+            pushInteger(((LuaTable) val).length());
+            return;
+        }
+        throw new RuntimeException("length error!");
     }
 
     @Override
@@ -545,6 +715,14 @@ public class LuaStateImpl implements LuaState, LuaVM {
                     String s1 = toString(-2);
                     pop(2);
                     pushString(s1 + s2);
+                    continue;
+                }
+
+                Object b = stack.pop();
+                Object a = stack.pop();
+                Object mm = getMetamethod(a, b, "__concat");
+                if (mm != null) {
+                    stack.push(callMetamethod(a, b, mm));
                     continue;
                 }
 
