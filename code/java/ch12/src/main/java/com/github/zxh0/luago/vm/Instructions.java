@@ -235,6 +235,27 @@ public class Instructions {
         }
     }
 
+    // R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2));
+    public static void tForCall(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int c = Instruction.getC(i);
+        pushFuncAndArgs(a, 3, vm);
+        vm.call(2, c);
+        popResults(a+3, c+1, vm);
+    }
+
+    // if R(A+1) ~= nil then {
+    //   R(A)=R(A+1); pc += sBx
+    // }
+    public static void tForLoop(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int sBx = Instruction.getSBx(i);
+        if (!vm.isNil(a + 1)) {
+            vm.copy(a+1, a);
+            vm.addPC(sBx);
+        }
+    }
+
     /* table */
 
     // R(A) := {} (size = B,C)

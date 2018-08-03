@@ -79,5 +79,6 @@ public interface LuaState {
     /* miscellaneous functions */
     void len(int idx);
     void concat(int n);
+    boolean next(int idx);
 
 }
