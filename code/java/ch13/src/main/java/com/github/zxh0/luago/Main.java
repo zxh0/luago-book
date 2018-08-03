@@ -1,12 +1,14 @@
 package com.github.zxh0.luago;
 
 import com.github.zxh0.luago.api.LuaState;
+import com.github.zxh0.luago.api.ThreadStatus;
 import com.github.zxh0.luago.state.LuaStateImpl;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.github.zxh0.luago.api.LuaType.LUA_TNIL;
+import static com.github.zxh0.luago.api.ThreadStatus.LUA_OK;
 
 public class Main {
 
@@ -20,6 +22,8 @@ public class Main {
             ls.register("next", Main::next);
             ls.register("pairs", Main::pairs);
             ls.register("ipairs", Main::iPairs);
+            ls.register("error", Main::error);
+            ls.register("pcall", Main::pCall);
             ls.load(data, args[0], "b");
             ls.call(0, 0);
         }
@@ -83,6 +87,18 @@ public class Main {
         long i = ls.toInteger(2) + 1;
         ls.pushInteger(i);
         return ls.getI(1, i) == LUA_TNIL ? 1 : 2;
+    }
+
+    private static int  error(LuaState ls) {
+        return ls.error();
+    }
+
+    private static int  pCall(LuaState ls) {
+        int nArgs = ls.getTop() - 1;
+        ThreadStatus status = ls.pCall(nArgs, -1, 0);
+        ls.pushBoolean(status == LUA_OK);
+        ls.insert(1);
+        return ls.getTop();
     }
 
 }

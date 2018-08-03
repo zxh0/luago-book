@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.github.zxh0.luago.api.ArithOp.*;
 import static com.github.zxh0.luago.api.LuaType.*;
-import static com.github.zxh0.luago.api.ThreadStatus.LUA_OK;
+import static com.github.zxh0.luago.api.ThreadStatus.*;
 
 public class LuaStateImpl implements LuaState, LuaVM {
 
@@ -683,6 +683,25 @@ public class LuaStateImpl implements LuaState, LuaVM {
         }
     }
 
+
+    @Override
+    public ThreadStatus pCall(int nArgs, int nResults, int msgh) {
+        LuaStack caller = stack;
+        try {
+            call(nArgs, nResults);
+            return LUA_OK;
+        } catch (Exception e) {
+            if (msgh != 0) {
+                throw e;
+            }
+            while (stack != caller) {
+                popLuaStack();
+            }
+            stack.push(e.getMessage()); // TODO
+            return LUA_ERRRUN;
+        }
+    }
+
     /* miscellaneous functions */
 
     @Override
@@ -747,6 +766,12 @@ public class LuaStateImpl implements LuaState, LuaVM {
             return false;
         }
         throw new RuntimeException("table expected!");
+    }
+
+    @Override
+    public int error() {
+        Object err = stack.pop();
+        throw new RuntimeException(err.toString()); // TODO
     }
 
     /* LuaVM */
