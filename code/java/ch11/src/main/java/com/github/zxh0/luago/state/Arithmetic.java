@@ -42,7 +42,24 @@ class Arithmetic {
             null,              // LUA_OPBNOT
     };
 
-    static Object arith(Object a, Object b, ArithOp op) {
+    private static final String[] metamethods = {
+            "__add",
+            "__sub",
+            "__mul",
+            "__mod",
+            "__pow",
+            "__div",
+            "__idiv",
+            "__band",
+            "__bor",
+            "__bxor",
+            "__shl",
+            "__shr",
+            "__unm",
+            "__bnot",
+    };
+
+    static Object arith(Object a, Object b, ArithOp op, LuaStateImpl ls) {
         LongBinaryOperator integerFunc = integerOps[op.ordinal()];
         DoubleBinaryOperator floatFunc = floatOps[op.ordinal()];
 
@@ -68,7 +85,13 @@ class Arithmetic {
                 }
             }
         }
-        return null;
+
+        Object mm = ls.getMetamethod(a, b, metamethods[op.ordinal()]);
+        if (mm != null) {
+            return ls.callMetamethod(a, b, mm);
+        }
+
+        throw new RuntimeException("arithmetic error!");
     }
 
 }

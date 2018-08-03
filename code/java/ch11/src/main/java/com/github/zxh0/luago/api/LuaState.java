@@ -40,6 +40,7 @@ public interface LuaState {
     Double toNumberX(int idx);
     String toString(int idx);
     JavaFunction toJavaFunction(int idx);
+    int rawLen(int idx);
     /* push functions (Go -> stack); */
     void pushNil();
     void pushBoolean(boolean b);
@@ -52,17 +53,24 @@ public interface LuaState {
     /* comparison and arithmetic functions */
     void arith(ArithOp op);
     boolean compare(int idx1, int idx2, CmpOp op);
+    boolean rawEqual(int idx1, int idx2);
     /* get functions (Lua -> stack) */
     void newTable();
     void createTable(int nArr, int nRec);
     LuaType getTable(int idx);
     LuaType getField(int idx, String k);
     LuaType getI(int idx, long i);
+    LuaType rawGet(int idx);
+    LuaType rawGetI(int idx, long i);
     LuaType getGlobal(String name);
+    boolean getMetatable(int idx);
     /* set functions (stack -> Lua) */
     void setTable(int idx);
     void setField(int idx, String k);
     void setI(int idx, long i);
+    void rawSet(int idx);
+    void rawSetI(int idx, long i);
+    void setMetatable(int idx);
     void setGlobal(String name);
     void register(String name, JavaFunction f);
     /* 'load' and 'call' functions (load and run Lua code) */

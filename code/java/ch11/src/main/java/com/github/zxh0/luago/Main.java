@@ -13,6 +13,8 @@ public class Main {
             byte[] data = Files.readAllBytes(Paths.get(args[0]));
             LuaState ls = new LuaStateImpl();
             ls.register("print", Main::print);
+            ls.register("getmetatable", Main::getMetatable);
+            ls.register("setmetatable", Main::setMetatable);
             ls.load(data, args[0], "b");
             ls.call(0, 0);
         }
@@ -34,6 +36,18 @@ public class Main {
         }
         System.out.println();
         return 0;
+    }
+
+    private static int getMetatable(LuaState ls) {
+        if (!ls.getMetatable(1)) {
+            ls.pushNil();
+        }
+        return 1;
+    }
+
+    private static int setMetatable(LuaState ls) {
+        ls.setMetatable(1);
+        return 1;
     }
 
 }

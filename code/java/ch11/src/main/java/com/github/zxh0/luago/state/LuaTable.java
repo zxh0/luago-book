@@ -9,6 +9,7 @@ import java.util.Map;
 
 class LuaTable {
 
+    LuaTable metatable;
     private List<Object> arr;
     private Map<Object, Object> map;
 
@@ -19,6 +20,10 @@ class LuaTable {
         if (nRec > 0) {
             map = new HashMap<>(nRec);
         }
+    }
+
+    boolean hasMetafield(String fieldName) {
+        return metatable != null && metatable.get(fieldName) != null;
     }
 
     int length() {
