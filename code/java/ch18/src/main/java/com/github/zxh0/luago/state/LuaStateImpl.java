@@ -5,13 +5,15 @@ import com.github.zxh0.luago.binchunk.BinaryChunk;
 import com.github.zxh0.luago.binchunk.Prototype;
 import com.github.zxh0.luago.binchunk.Upvalue;
 import com.github.zxh0.luago.compiler.Compiler;
+import com.github.zxh0.luago.number.LuaNumber;
+import com.github.zxh0.luago.stdlib.BasicLib;
 import com.github.zxh0.luago.vm.Instruction;
 import com.github.zxh0.luago.vm.OpCode;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 import static com.github.zxh0.luago.api.ArithOp.*;
 import static com.github.zxh0.luago.api.LuaType.*;
@@ -302,6 +304,11 @@ public class LuaStateImpl implements LuaState, LuaVM {
     }
 
     @Override
+    public Object toPointer(int idx) {
+        return stack.get(idx); // todo
+    }
+
+    @Override
     public int rawLen(int idx) {
         Object val = stack.get(idx);
         if (val instanceof String) {
@@ -338,6 +345,11 @@ public class LuaStateImpl implements LuaState, LuaVM {
     @Override
     public void pushString(String s) {
         stack.push(s);
+    }
+
+    @Override
+    public void pushFString(String fmt, Object... a) {
+        pushString(String.format(fmt, a));
     }
 
     @Override
@@ -777,6 +789,21 @@ public class LuaStateImpl implements LuaState, LuaVM {
         throw new RuntimeException(err.toString()); // TODO
     }
 
+    @Override
+    public boolean stringToNumber(String s) {
+        Long i = LuaNumber.parseInteger(s);
+        if (i != null) {
+            pushInteger(i);
+            return true;
+        }
+        Double f = LuaNumber.parseFloat(s);
+        if (f != null) {
+            pushNumber(f);
+            return true;
+        }
+        return false;
+    }
+
     /* LuaVM */
 
     @Override
@@ -855,6 +882,300 @@ public class LuaStateImpl implements LuaState, LuaVM {
                 }
             }
         }
+    }
+
+    /* aux lib */
+
+    @Override
+    public int error2(String fmt, Object... a) {
+        pushFString(fmt, a); // todo
+        return error();
+    }
+
+    @Override
+    public int argError(int arg, String extraMsg) {
+        return error2("bad argument #%d (%s)", arg, extraMsg); // todo
+    }
+
+    @Override
+    public void checkStack2(int sz, String msg) {
+        if (!checkStack(sz)) {
+            if (msg != "") {
+                error2("stack overflow (%s)", msg);
+            } else {
+                error2("stack overflow");
+            }
+        }
+    }
+
+    @Override
+    public void argCheck(boolean cond, int arg, String extraMsg) {
+        if (!cond) {
+            argError(arg, extraMsg);
+        }
+    }
+
+    @Override
+    public void checkAny(int arg) {
+        if (type(arg) == LUA_TNONE) {
+            argError(arg, "value expected");
+        }
+    }
+
+    @Override
+    public void checkType(int arg, LuaType t) {
+        if (type(arg) != t) {
+            tagError(arg, t);
+        }
+    }
+
+    @Override
+    public long checkInteger(int arg) {
+        Long i = toIntegerX(arg);
+        if (i == null) {
+            intError(arg);
+        }
+        return i;
+    }
+
+    @Override
+    public double checkNumber(int arg) {
+        Double f = toNumberX(arg);
+        if (f == null) {
+            tagError(arg, LUA_TNUMBER);
+        }
+        return f;
+    }
+
+    @Override
+    public String checkString(int arg) {
+        String s = toString(arg);
+        if (s == null) {
+            tagError(arg, LUA_TSTRING);
+        }
+        return s;
+    }
+
+    @Override
+    public long optInteger(int arg, long dft) {
+        return isNoneOrNil(arg) ? dft : checkInteger(arg);
+    }
+
+    @Override
+    public double optNumber(int arg, double dft) {
+        return isNoneOrNil(arg) ? dft : checkNumber(arg);
+    }
+
+    @Override
+    public String optString(int arg, String dft) {
+        return isNoneOrNil(arg) ? dft : checkString(arg);
+    }
+
+    @Override
+    public boolean doFile(String filename) {
+        return loadFile(filename) == LUA_OK &&
+                pCall(0, LUA_MULTRET, 0) == LUA_OK;
+    }
+
+    @Override
+    public boolean doString(String str) {
+        return loadString(str) == LUA_OK &&
+                pCall(0, LUA_MULTRET, 0) == LUA_OK;
+    }
+
+    @Override
+    public ThreadStatus loadFile(String filename) {
+        return loadFileX(filename, "bt");
+    }
+
+    @Override
+    public ThreadStatus loadFileX(String filename, String mode) {
+        try {
+            byte[] data = Files.readAllBytes(Paths.get(filename));
+            return load(data, "@" + filename, mode);
+        } catch (IOException e) {
+            return LUA_ERRFILE;
+        }
+    }
+
+    @Override
+    public ThreadStatus loadString(String s) {
+        return load(s.getBytes(), s, "bt");
+    }
+
+    @Override
+    public String typeName2(int idx) {
+        return typeName(type(idx));
+    }
+
+    @Override
+    public long len2(int idx) {
+        len(idx);
+        Long i = toIntegerX(-1);
+        if (i == null) {
+            error2("object length is not an integer");
+        }
+        pop(1);
+        return i;
+    }
+
+    @Override
+    public String toString2(int idx) {
+        if (callMeta(idx, "__tostring")) { /* metafield? */
+            if (!isString(-1)) {
+                error2("'__tostring' must return a string");
+            }
+        } else {
+            switch (type(idx)) {
+                case LUA_TNUMBER:
+                    if (isInteger(idx)) {
+                        pushString(String.format("%d", toInteger(idx))); // todo
+                    } else {
+                        pushString(String.format("%g", toNumber(idx))); // todo
+                    }
+                    break;
+                case LUA_TSTRING:
+                    pushValue(idx);
+                    break;
+                case LUA_TBOOLEAN:
+                    pushString(toBoolean(idx) ? "true" : "false");
+                    break;
+                case LUA_TNIL:
+                    pushString("nil");
+                    break;
+                default:
+                    LuaType tt = getMetafield(idx, "__name"); /* try name */
+                    String kind = tt == LUA_TSTRING ? checkString(-1) : typeName2(idx);
+                    pushString(String.format("%s: %s", kind, Objects.hashCode(idx)));
+                    if (tt != LUA_TNIL) {
+                        remove(-2); /* remove '__name' */
+                    }
+                    break;
+            }
+        }
+        return checkString(-1);
+    }
+
+    @Override
+    public boolean getSubTable(int idx, String fname) {
+        if (getField(idx, fname) == LUA_TTABLE) {
+            return true; /* table already there */
+        }
+        pop(1); /* remove previous result */
+        idx = stack.absIndex(idx);
+        newTable();
+        pushValue(-1);        /* copy to be left at top */
+        setField(idx, fname); /* assign new table to field */
+        return false;              /* false, because did not find table there */
+    }
+
+    @Override
+    public LuaType getMetafield(int obj, String event) {
+        if (!getMetatable(obj)) { /* no metatable? */
+            return LUA_TNIL;
+        }
+
+        pushString(event);
+        LuaType tt = rawGet(-2);
+        if (tt == LUA_TNIL) { /* is metafield nil? */
+            pop(2); /* remove metatable and metafield */
+        } else {
+            remove(-2); /* remove only metatable */
+        }
+        return tt; /* return metafield type */
+    }
+
+    @Override
+    public boolean callMeta(int obj, String event) {
+        obj = absIndex(obj);
+        if (getMetafield(obj, event) == LUA_TNIL) { /* no metafield? */
+            return false;
+        }
+
+        pushValue(obj);
+        call(1, 1);
+        return true;
+    }
+
+    @Override
+    public void openLibs() {
+        Map<String, JavaFunction> libs = new HashMap<>();
+        libs.put("_G", BasicLib::openBaseLib);
+
+        libs.forEach((name, fun) -> {
+            requireF(name, fun, true);
+            pop(1);
+        });
+    }
+
+    @Override
+    public void requireF(String modname, JavaFunction openf, boolean glb) {
+        getSubTable(LUA_REGISTRYINDEX, "_LOADED");
+        getField(-1, modname); /* LOADED[modname] */
+        if (!toBoolean(-1)) {   /* package not already loaded? */
+            pop(1); /* remove field */
+            pushJavaFunction(openf);
+            pushString(modname);   /* argument to open function */
+            call(1, 1);            /* call 'openf' to open module */
+            pushValue(-1);         /* make copy of module (call result) */
+            setField(-3, modname); /* _LOADED[modname] = module */
+        }
+        remove(-2); /* remove _LOADED table */
+        if (glb) {
+            pushValue(-1);      /* copy of module */
+            setGlobal(modname); /* _G[modname] = module */
+        }
+    }
+
+    @Override
+    public void newLib(Map<String, JavaFunction> l) {
+        newLibTable(l);
+        setFuncs(l, 0);
+    }
+
+    @Override
+    public void newLibTable(Map<String, JavaFunction> l) {
+        createTable(0, l.size());
+    }
+
+    @Override
+    public void setFuncs(Map<String, JavaFunction> l, int nup) {
+        checkStack2(nup, "too many upvalues");
+        l.forEach((name, fun) -> { /* fill the table with given functions */
+            for (int i = 0; i < nup; i++) { /* copy upvalues to the top */
+                pushValue(-nup);
+            }
+            // r[-(nup+2)][name]=fun
+            pushJavaClosure(fun, nup); /* closure with those upvalues */
+            setField(-(nup + 2), name);
+        });
+        pop(nup); /* remove upvalues */
+    }
+
+    private void intError(int arg) {
+        if (isNumber(arg)) {
+            argError(arg, "number has no integer representation");
+        } else {
+            tagError(arg, LUA_TNUMBER);
+        }
+    }
+
+    private void tagError(int arg, LuaType tag) {
+        typeError(arg, typeName(tag));
+    }
+
+    private void typeError(int arg, String tname) {
+        String typeArg; /* name for the type of the actual argument */
+        if (getMetafield(arg, "__name") == LUA_TSTRING) {
+            typeArg = toString(-1); /* use the given type name */
+        } else if (type(arg) == LUA_TLIGHTUSERDATA) {
+            typeArg = "light userdata"; /* special name for messages */
+        } else {
+            typeArg = typeName2(arg); /* standard name */
+        }
+        String msg = tname + " expected, got " + typeArg;
+        pushString(msg);
+        argError(arg, msg);
     }
 
 }
