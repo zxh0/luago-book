@@ -15,7 +15,15 @@ import static com.github.zxh0.luago.api.ThreadStatus.LUA_OK;
 
 public class LuaStateImpl implements LuaState, LuaVM {
 
+    LuaTable registry = new LuaTable(0, 0);
     private LuaStack stack = new LuaStack();
+
+    public LuaStateImpl() {
+        registry.put(LUA_RIDX_GLOBALS, new LuaTable(0, 0));
+        LuaStack stack = new LuaStack();
+        stack.state = this;
+        pushLuaStack(stack);
+    }
 
     private void pushLuaStack(LuaStack newTop) {
         newTop.prev = this.stack;
@@ -185,6 +193,13 @@ public class LuaStateImpl implements LuaState, LuaVM {
     }
 
     @Override
+    public boolean isJavaFunction(int idx) {
+        Object val = stack.get(idx);
+        return val instanceof Closure
+                && ((Closure) val).javaFunc != null;
+    }
+
+    @Override
     public boolean toBoolean(int idx) {
         return LuaValue.toBoolean(stack.get(idx));
     }
@@ -231,6 +246,14 @@ public class LuaStateImpl implements LuaState, LuaVM {
         }
     }
 
+    @Override
+    public JavaFunction toJavaFunction(int idx) {
+        Object val = stack.get(idx);
+        return val instanceof Closure
+                ? ((Closure) val).javaFunc
+                : null;
+    }
+
     /* push functions (Go -> stack); */
 
     @Override
@@ -256,6 +279,16 @@ public class LuaStateImpl implements LuaState, LuaVM {
     @Override
     public void pushString(String s) {
         stack.push(s);
+    }
+
+    @Override
+    public void pushJavaFunction(JavaFunction f) {
+        stack.push(new Closure(f));
+    }
+
+    @Override
+    public void pushGlobalTable() {
+        stack.push(registry.get(LUA_RIDX_GLOBALS));
     }
 
     /* comparison and arithmetic functions */
@@ -319,6 +352,12 @@ public class LuaStateImpl implements LuaState, LuaVM {
         return getTable(t, i);
     }
 
+    @Override
+    public LuaType getGlobal(String name) {
+        Object t = registry.get(LUA_RIDX_GLOBALS);
+        return getTable(t, name);
+    }
+
     private LuaType getTable(Object t, Object k) {
         if (t instanceof LuaTable) {
             Object v = ((LuaTable) t).get(k);
@@ -352,6 +391,19 @@ public class LuaStateImpl implements LuaState, LuaVM {
         setTable(t, i, v);
     }
 
+    @Override
+    public void setGlobal(String name) {
+        Object t = registry.get(LUA_RIDX_GLOBALS);
+        Object v = stack.pop();
+        setTable(t, name, v);
+    }
+
+    @Override
+    public void register(String name, JavaFunction f) {
+        pushJavaFunction(f);
+        setGlobal(name);
+    }
+
     private void setTable(Object t, Object k, Object v) {
         if (t instanceof LuaTable) {
             ((LuaTable) t).put(k, v);
@@ -374,11 +426,38 @@ public class LuaStateImpl implements LuaState, LuaVM {
         Object val = stack.get(-(nArgs + 1));
         if (val instanceof Closure) {
             Closure c = (Closure) val;
-            System.out.printf("call %s<%d,%d>\n", c.proto.getSource(),
-                    c.proto.getLineDefined(), c.proto.getLastLineDefined());
-            callLuaClosure(nArgs, nResults, c);
+            if (c.proto != null) {
+                callLuaClosure(nArgs, nResults, c);
+            } else {
+                callJavaClosure(nArgs, nResults, c);
+            }
         } else {
             throw new RuntimeException("not function!");
+        }
+    }
+
+    private void callJavaClosure(int nArgs, int nResults, Closure c) {
+        // create new lua stack
+        LuaStack newStack = new LuaStack(/*nRegs+LUA_MINSTACK*/);
+        newStack.state = this;
+        newStack.closure = c;
+
+        // pass args, pop func
+        if (nArgs > 0) {
+            newStack.pushN(stack.popN(nArgs), nArgs);
+        }
+        stack.pop();
+
+        // run closure
+        pushLuaStack(newStack);
+        int r = c.javaFunc.invoke(this);
+        popLuaStack();
+
+        // return results
+        if (nResults != 0) {
+            List<Object> results = newStack.popN(r);
+            //stack.check(results.size())
+            stack.pushN(results, nResults);
         }
     }
 
@@ -388,7 +467,7 @@ public class LuaStateImpl implements LuaState, LuaVM {
         boolean isVararg = c.proto.getIsVararg() == 1;
 
         // create new lua stack
-        LuaStack newStack = new LuaStack(/*nRegs + 20*/);
+        LuaStack newStack = new LuaStack(/*nRegs+LUA_MINSTACK*/);
         newStack.closure = c;
 
         // pass args, pop func
