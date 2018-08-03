@@ -39,5 +39,11 @@ public interface LuaState {
     void pushInteger(long n);
     void pushNumber(double n);
     void pushString(String s);
+    /* comparison and arithmetic functions */
+    void arith(ArithOp op);
+    boolean compare(int idx1, int idx2, CmpOp op);
+    /* miscellaneous functions */
+    void len(int idx);
+    void concat(int n);
 
 }
