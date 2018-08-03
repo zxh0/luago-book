@@ -2,6 +2,11 @@ package com.github.zxh0.luago.api;
 
 public interface LuaState {
 
+    int LUA_MINSTACK = 20;
+    int LUAI_MAXSTACK = 1000000;
+    int LUA_REGISTRYINDEX = -LUAI_MAXSTACK - 1000;
+    long LUA_RIDX_GLOBALS = 2;
+
     /* basic stack manipulation */
     int getTop();
     int absIndex(int idx);
@@ -27,18 +32,22 @@ public interface LuaState {
     boolean isTable(int idx);
     boolean isThread(int idx);
     boolean isFunction(int idx);
+    boolean isJavaFunction(int idx);
     boolean toBoolean(int idx);
     long toInteger(int idx);
     Long toIntegerX(int idx);
     double toNumber(int idx);
     Double toNumberX(int idx);
     String toString(int idx);
+    JavaFunction toJavaFunction(int idx);
     /* push functions (Go -> stack); */
     void pushNil();
     void pushBoolean(boolean b);
     void pushInteger(long n);
     void pushNumber(double n);
     void pushString(String s);
+    void pushJavaFunction(JavaFunction f);
+    void pushGlobalTable();
     /* comparison and arithmetic functions */
     void arith(ArithOp op);
     boolean compare(int idx1, int idx2, CmpOp op);
@@ -48,10 +57,13 @@ public interface LuaState {
     LuaType getTable(int idx);
     LuaType getField(int idx, String k);
     LuaType getI(int idx, long i);
+    LuaType getGlobal(String name);
     /* set functions (stack -> Lua) */
     void setTable(int idx);
     void setField(int idx, String k);
     void setI(int idx, long i);
+    void setGlobal(String name);
+    void register(String name, JavaFunction f);
     /* 'load' and 'call' functions (load and run Lua code) */
     ThreadStatus load(byte[] chunk, String chunkName, String mode);
     void call(int nArgs, int nResults);

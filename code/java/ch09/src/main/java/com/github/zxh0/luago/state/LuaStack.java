@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.github.zxh0.luago.api.LuaState.LUA_REGISTRYINDEX;
+
 class LuaStack {
 
     /* virtual stack */
     private final ArrayList<Object> slots = new ArrayList<>();
     /* call info */
+    LuaStateImpl state;
     Closure closure;
     List<Object> varargs;
     int pc;
@@ -50,15 +53,22 @@ class LuaStack {
     }
 
     int absIndex(int idx) {
-        return idx >= 0 ? idx : idx + slots.size() + 1;
+        return idx >= 0 || idx <= LUA_REGISTRYINDEX
+                ? idx : idx + slots.size() + 1;
     }
 
     boolean isValid(int idx) {
+        if (idx == LUA_REGISTRYINDEX) {
+            return true;
+        }
         int absIdx = absIndex(idx);
         return absIdx > 0 && absIdx <= slots.size();
     }
 
     Object get(int idx) {
+        if (idx == LUA_REGISTRYINDEX) {
+            return state.registry;
+        }
         int absIdx = absIndex(idx);
         if (absIdx > 0 && absIdx <= slots.size()) {
             return slots.get(absIdx - 1);
@@ -68,6 +78,10 @@ class LuaStack {
     }
 
     void set(int idx, Object val) {
+        if (idx == LUA_REGISTRYINDEX) {
+            state.registry = (LuaTable) val;
+            return;
+        }
         int absIdx = absIndex(idx);
         slots.set(absIdx - 1, val);
     }

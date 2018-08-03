@@ -15,7 +15,7 @@ public enum OpCode {
     LOADBOOL(0, 1, OpArgU, OpArgU, iABC , Instructions::loadBool), // R(A) := (bool)B; if (C) pc++
     LOADNIL (0, 1, OpArgU, OpArgN, iABC , Instructions::loadNil ), // R(A), R(A+1), ..., R(A+B) := nil
     GETUPVAL(0, 1, OpArgU, OpArgN, iABC , null                  ), // R(A) := UpValue[B]
-    GETTABUP(0, 1, OpArgU, OpArgK, iABC , null                  ), // R(A) := UpValue[B][RK(C)]
+    GETTABUP(0, 1, OpArgU, OpArgK, iABC , Instructions::getTabUp), // R(A) := UpValue[B][RK(C)]
     GETTABLE(0, 1, OpArgR, OpArgK, iABC , Instructions::getTable), // R(A) := R(B)[RK(C)]
     SETTABUP(0, 0, OpArgK, OpArgK, iABC , null                  ), // UpValue[A][RK(B)] := RK(C)
     SETUPVAL(0, 0, OpArgU, OpArgN, iABC , null                  ), // UpValue[B] := R(A)
