@@ -9,5 +9,6 @@ public interface LuaVM extends LuaState {
     int registerCount();
     void loadVararg(int n);
     void loadProto(int idx);
+    void closeUpvalues(int a);
 
 }

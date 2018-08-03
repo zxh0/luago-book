@@ -3,10 +3,13 @@ package com.github.zxh0.luago.state;
 import com.github.zxh0.luago.api.*;
 import com.github.zxh0.luago.binchunk.BinaryChunk;
 import com.github.zxh0.luago.binchunk.Prototype;
+import com.github.zxh0.luago.binchunk.Upvalue;
 import com.github.zxh0.luago.vm.Instruction;
 import com.github.zxh0.luago.vm.OpCode;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.github.zxh0.luago.api.ArithOp.*;
@@ -283,7 +286,17 @@ public class LuaStateImpl implements LuaState, LuaVM {
 
     @Override
     public void pushJavaFunction(JavaFunction f) {
-        stack.push(new Closure(f));
+        stack.push(new Closure(f, 0));
+    }
+
+    @Override
+    public void pushJavaClosure(JavaFunction f, int n) {
+        Closure closure = new Closure(f, n);
+        for (int i = n; i > 0; i--) {
+            Object val = stack.pop();
+            closure.upvals[n-1] = new UpvalueHolder(val); // TODO
+        }
+        stack.push(closure);
     }
 
     @Override
@@ -417,7 +430,12 @@ public class LuaStateImpl implements LuaState, LuaVM {
     @Override
     public ThreadStatus load(byte[] chunk, String chunkName, String mode) {
         Prototype proto = BinaryChunk.undump(chunk); // todo
-        stack.push(new Closure(proto));
+        Closure closure = new Closure(proto);
+        stack.push(closure);
+        if (proto.getUpvalues().length > 0) {
+            Object env = registry.get(LUA_RIDX_GLOBALS);
+            closure.upvals[0] = new UpvalueHolder(env); // todo
+        }
         return LUA_OK;
     }
 
@@ -582,7 +600,38 @@ public class LuaStateImpl implements LuaState, LuaVM {
     @Override
     public void loadProto(int idx) {
         Prototype proto = stack.closure.proto.getProtos()[idx];
-        stack.push(new Closure(proto));
+        Closure closure = new Closure(proto);
+        stack.push(closure);
+
+        for (int i = 0; i < proto.getUpvalues().length; i++) {
+            Upvalue uvInfo = proto.getUpvalues()[i];
+            int uvIdx = uvInfo.getIdx();
+            if (uvInfo.getInstack() == 1) {
+                if (stack.openuvs == null) {
+                    stack.openuvs = new HashMap<>();
+                }
+                if (stack.openuvs.containsKey(uvIdx)) {
+                    closure.upvals[i] = stack.openuvs.get(uvIdx);
+                } else {
+                    closure.upvals[i] = new UpvalueHolder(stack, uvIdx);
+                    stack.openuvs.put(uvIdx, closure.upvals[i]);
+                }
+            } else {
+                closure.upvals[i] = stack.closure.upvals[uvIdx];
+            }
+        }
+    }
+
+    public void closeUpvalues(int a) {
+        if (stack.openuvs != null) {
+            for (Iterator<UpvalueHolder> it = stack.openuvs.values().iterator(); it.hasNext(); ) {
+                UpvalueHolder uv = it.next();
+                if (uv.index >= a - 1) {
+                    uv.migrate();
+                    it.remove();
+                }
+            }
+        }
     }
 
 }
