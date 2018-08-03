@@ -42,6 +42,16 @@ public interface LuaState {
     /* comparison and arithmetic functions */
     void arith(ArithOp op);
     boolean compare(int idx1, int idx2, CmpOp op);
+    /* get functions (Lua -> stack) */
+    void newTable();
+    void createTable(int nArr, int nRec);
+    LuaType getTable(int idx);
+    LuaType getField(int idx, String k);
+    LuaType getI(int idx, long i);
+    /* set functions (stack -> Lua) */
+    void setTable(int idx);
+    void setField(int idx, String k);
+    void setI(int idx, long i);
     /* miscellaneous functions */
     void len(int idx);
     void concat(int n);
