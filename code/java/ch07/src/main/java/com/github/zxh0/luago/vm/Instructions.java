@@ -10,6 +10,9 @@ import static com.github.zxh0.luago.api.LuaType.LUA_TSTRING;
 
 public class Instructions {
 
+    /* number of list items to accumulate before a SETLIST instruction */
+    public static final int LFIELDS_PER_FLUSH = 50;
+
     /* misc */
 
     // R(A) := R(B)
@@ -228,6 +231,53 @@ public class Instructions {
             // pc+=sBx; R(A+3)=R(A)
             vm.addPC(sBx);
             vm.copy(a, a+3);
+        }
+    }
+
+    /* table */
+
+    // R(A) := {} (size = B,C)
+    public static void newTable(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i);
+        int c = Instruction.getC(i);
+        vm.createTable(FPB.fb2int(b), FPB.fb2int(c));
+        vm.replace(a);
+    }
+
+    // R(A) := R(B)[RK(C)]
+    public static void getTable(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i) + 1;
+        int c = Instruction.getC(i);
+        vm.getRK(c);
+        vm.getTable(b);
+        vm.replace(a);
+    }
+
+    // R(A)[RK(B)] := RK(C)
+    public static void setTable(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i);
+        int c = Instruction.getC(i);
+        vm.getRK(b);
+        vm.getRK(c);
+        vm.setTable(a);
+    }
+
+    // R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B
+    public static void setList(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i);
+        int c = Instruction.getC(i);
+        c = c > 0 ? c - 1 : Instruction.getAx(vm.fetch());
+
+        vm.checkStack(1);
+        int idx = c * LFIELDS_PER_FLUSH;
+        for (int j = 1; j <= b; j++) {
+            idx++;
+            vm.pushValue(a + j);
+            vm.setI(a, idx);
         }
     }
 

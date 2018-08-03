@@ -16,11 +16,11 @@ public enum OpCode {
     LOADNIL (0, 1, OpArgU, OpArgN, iABC , Instructions::loadNil ), // R(A), R(A+1), ..., R(A+B) := nil
     GETUPVAL(0, 1, OpArgU, OpArgN, iABC , null                  ), // R(A) := UpValue[B]
     GETTABUP(0, 1, OpArgU, OpArgK, iABC , null                  ), // R(A) := UpValue[B][RK(C)]
-    GETTABLE(0, 1, OpArgR, OpArgK, iABC , null                  ), // R(A) := R(B)[RK(C)]
+    GETTABLE(0, 1, OpArgR, OpArgK, iABC , Instructions::getTable), // R(A) := R(B)[RK(C)]
     SETTABUP(0, 0, OpArgK, OpArgK, iABC , null                  ), // UpValue[A][RK(B)] := RK(C)
     SETUPVAL(0, 0, OpArgU, OpArgN, iABC , null                  ), // UpValue[B] := R(A)
-    SETTABLE(0, 0, OpArgK, OpArgK, iABC , null                  ), // R(A)[RK(B)] := RK(C)
-    NEWTABLE(0, 1, OpArgU, OpArgU, iABC , null                  ), // R(A) := {} (size = B,C)
+    SETTABLE(0, 0, OpArgK, OpArgK, iABC , Instructions::setTable), // R(A)[RK(B)] := RK(C)
+    NEWTABLE(0, 1, OpArgU, OpArgU, iABC , Instructions::newTable), // R(A) := {} (size = B,C)
     SELF    (0, 1, OpArgR, OpArgK, iABC , null                  ), // R(A+1) := R(B); R(A) := R(B)[RK(C)]
     ADD     (0, 1, OpArgK, OpArgK, iABC , Instructions::add     ), // R(A) := RK(B) + RK(C)
     SUB     (0, 1, OpArgK, OpArgK, iABC , Instructions::sub     ), // R(A) := RK(B) - RK(C)
@@ -52,7 +52,7 @@ public enum OpCode {
     FORPREP (0, 1, OpArgR, OpArgN, iAsBx, Instructions::forPrep ), // R(A)-=R(A+2); pc+=sBx
     TFORCALL(0, 0, OpArgN, OpArgU, iABC , null                  ), // R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2));
     TFORLOOP(0, 1, OpArgR, OpArgN, iAsBx, null                  ), // if R(A+1) ~= nil then { R(A)=R(A+1); pc += sBx }
-    SETLIST (0, 0, OpArgU, OpArgU, iABC , null                  ), // R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B
+    SETLIST (0, 0, OpArgU, OpArgU, iABC , Instructions::setList ), // R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B
     CLOSURE (0, 1, OpArgU, OpArgN, iABx , null                  ), // R(A) := closure(KPROTO[Bx])
     VARARG  (0, 1, OpArgU, OpArgN, iABC , null                  ), // R(A), R(A+1), ..., R(A+B-2) = vararg
     EXTRAARG(0, 0, OpArgU, OpArgU, iAx  , null                  ), // extra (larger) argument for previous opcode
