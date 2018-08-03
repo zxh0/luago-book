@@ -11,4 +11,8 @@ public class ParensExp extends PrefixExp {
 
     private Exp exp;
 
+    public ParensExp(Exp exp) {
+        this.exp = exp;
+    }
+
 }

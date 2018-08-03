@@ -12,4 +12,10 @@ public class TableAccessExp extends PrefixExp {
     private Exp prefixExp;
     private Exp keyExp;
 
+    public TableAccessExp(int lastLine, Exp prefixExp, Exp keyExp) {
+        setLastLine(lastLine);
+        this.prefixExp = prefixExp;
+        this.keyExp = keyExp;
+    }
+
 }

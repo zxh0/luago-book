@@ -11,4 +11,8 @@ public class DoStat extends Stat {
 
     private Block block;
 
+    public DoStat(Block block) {
+        this.block = block;
+    }
+
 }

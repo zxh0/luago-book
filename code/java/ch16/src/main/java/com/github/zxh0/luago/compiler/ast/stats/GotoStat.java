@@ -10,4 +10,8 @@ public class GotoStat extends Stat {
 
     private String name;
 
+    public GotoStat(String name) {
+        this.name = name;
+    }
+
 }

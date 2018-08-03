@@ -22,6 +22,7 @@ mainClassName = 'com.github.zxh0.luago.Main'
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     //compile 'com.google.guava:guava:23.0'
+    compile 'com.google.code.gson:gson:2.8.5'
 
     compileOnly 'org.projectlombok:lombok:1.18.0'
 
