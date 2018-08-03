@@ -1,16 +1,24 @@
 package com.github.zxh0.luago.state;
 
-import com.github.zxh0.luago.api.ArithOp;
-import com.github.zxh0.luago.api.CmpOp;
-import com.github.zxh0.luago.api.LuaState;
-import com.github.zxh0.luago.api.LuaType;
+import com.github.zxh0.luago.api.*;
+import com.github.zxh0.luago.binchunk.Prototype;
 
 import static com.github.zxh0.luago.api.ArithOp.*;
 import static com.github.zxh0.luago.api.LuaType.*;
 
-public class LuaStateImpl implements LuaState {
+public class LuaStateImpl implements LuaState, LuaVM {
 
     private LuaStack stack = new LuaStack();
+    private Prototype proto;
+    private int pc;
+
+    public LuaStateImpl(Prototype proto) {
+        this.proto = proto;
+    }
+
+    public LuaStateImpl() {
+        proto = null;
+    }
 
     /* basic stack manipulation */
 
@@ -302,6 +310,37 @@ public class LuaStateImpl implements LuaState {
             }
         }
         // n == 1, do nothing
+    }
+
+    /* LuaVM */
+
+    @Override
+    public int getPC() {
+        return pc;
+    }
+
+    @Override
+    public void addPC(int n) {
+        pc += n;
+    }
+
+    @Override
+    public int fetch() {
+        return proto.getCode()[pc++];
+    }
+
+    @Override
+    public void getConst(int idx) {
+        stack.push(proto.getConstants()[idx]);
+    }
+
+    @Override
+    public void getRK(int rk) {
+        if (rk > 0xFF) { // constant
+            getConst(rk & 0xFF);
+        } else { // register
+            pushValue(rk + 1);
+        }
     }
 
 }
