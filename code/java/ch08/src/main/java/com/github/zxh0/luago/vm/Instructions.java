@@ -272,12 +272,136 @@ public class Instructions {
         int c = Instruction.getC(i);
         c = c > 0 ? c - 1 : Instruction.getAx(vm.fetch());
 
+        boolean bIsZero = b == 0;
+        if (bIsZero) {
+            b = ((int) vm.toInteger(-1)) - a - 1;
+            vm.pop(1);
+        }
+
         vm.checkStack(1);
         int idx = c * LFIELDS_PER_FLUSH;
         for (int j = 1; j <= b; j++) {
             idx++;
             vm.pushValue(a + j);
             vm.setI(a, idx);
+        }
+
+        if (bIsZero) {
+            for (int j = vm.registerCount() + 1; j <= vm.getTop(); j++) {
+                idx++;
+                vm.pushValue(j);
+                vm.setI(a, idx);
+            }
+
+            // clear stack
+            vm.setTop(vm.registerCount());
+        }
+    }
+
+    /* call */
+
+    // R(A+1) := R(B); R(A) := R(B)[RK(C)]
+    public static void self(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i) + 1;
+        int c = Instruction.getC(i);
+        vm.copy(b, a+1);
+        vm.getRK(c);
+        vm.getTable(b);
+        vm.replace(a);
+    }
+
+    // R(A) := closure(KPROTO[Bx])
+    public static void closure(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int bx = Instruction.getBx(i);
+        vm.loadProto(bx);
+        vm.replace(a);
+    }
+
+    // R(A), R(A+1), ..., R(A+B-2) = vararg
+    public static void vararg(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i);
+        if (b != 1) { // b==0 or b>1
+            vm.loadVararg(b - 1);
+            popResults(a, b, vm);
+        }
+    }
+
+    // return R(A)(R(A+1), ... ,R(A+B-1))
+    public static void tailCall(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i);
+        // todo: optimize tail call!
+        int c = 0;
+        int nArgs = pushFuncAndArgs(a, b, vm);
+        vm.call(nArgs, c-1);
+        popResults(a, c, vm);
+    }
+
+    // R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1))
+    public static void call(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i);
+        int c = Instruction.getC(i);
+        int nArgs = pushFuncAndArgs(a, b, vm);
+        vm.call(nArgs, c-1);
+        popResults(a, c, vm);
+    }
+
+    // return R(A), ... ,R(A+B-2)
+    public static void _return(int i, LuaVM vm) {
+        int a = Instruction.getA(i) + 1;
+        int b = Instruction.getB(i);
+        if (b == 1) {
+            // no return values
+        } else if (b > 1) {
+            // b-1 return values
+            vm.checkStack(b - 1);
+            for (int j = a; j <= a+b-2; j++) {
+                vm.pushValue(j);
+            }
+        } else {
+            fixStack(a, vm);
+        }
+    }
+
+    private static int pushFuncAndArgs(int a, int b, LuaVM vm) {
+        if (b >= 1) {
+            vm.checkStack(b);
+            for (int i = a; i < a+b; i++) {
+                vm.pushValue(i);
+            }
+            return b - 1;
+        } else {
+            fixStack(a, vm);
+            return vm.getTop() - vm.registerCount() - 1;
+        }
+    }
+
+    private static void fixStack(int a, LuaVM vm) {
+        int x = (int) vm.toInteger(-1);
+        vm.pop(1);
+
+        vm.checkStack(x - a);
+        for (int i = a; i < x; i++) {
+            vm.pushValue(i);
+        }
+        vm.rotate(vm.registerCount()+1, x-a);
+    }
+
+    private static void popResults(int a, int c, LuaVM vm) {
+        if (c == 1) {
+            // no results
+        } else if (c > 1) {
+            for (int i = a + c - 2; i >= a; i--) {
+                vm.replace(i);
+            }
+        } else {
+            // leave results on stack
+            vm.checkStack(1);
+            vm.pushInteger(a);
         }
     }
 

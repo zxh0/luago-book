@@ -1,23 +1,31 @@
 package com.github.zxh0.luago.state;
 
 import com.github.zxh0.luago.api.*;
+import com.github.zxh0.luago.binchunk.BinaryChunk;
 import com.github.zxh0.luago.binchunk.Prototype;
+import com.github.zxh0.luago.vm.Instruction;
+import com.github.zxh0.luago.vm.OpCode;
+
+import java.util.Collections;
+import java.util.List;
 
 import static com.github.zxh0.luago.api.ArithOp.*;
 import static com.github.zxh0.luago.api.LuaType.*;
+import static com.github.zxh0.luago.api.ThreadStatus.LUA_OK;
 
 public class LuaStateImpl implements LuaState, LuaVM {
 
     private LuaStack stack = new LuaStack();
-    private Prototype proto;
-    private int pc;
 
-    public LuaStateImpl(Prototype proto) {
-        this.proto = proto;
+    private void pushLuaStack(LuaStack newTop) {
+        newTop.prev = this.stack;
+        this.stack = newTop;
     }
 
-    public LuaStateImpl() {
-        proto = null;
+    private void popLuaStack() {
+        LuaStack top = this.stack;
+        this.stack = top.prev;
+        top.prev = null;
     }
 
     /* basic stack manipulation */
@@ -352,6 +360,69 @@ public class LuaStateImpl implements LuaState, LuaVM {
         throw new RuntimeException("not a table!");
     }
 
+    /* 'load' and 'call' functions */
+
+    @Override
+    public ThreadStatus load(byte[] chunk, String chunkName, String mode) {
+        Prototype proto = BinaryChunk.undump(chunk); // todo
+        stack.push(new Closure(proto));
+        return LUA_OK;
+    }
+
+    @Override
+    public void call(int nArgs, int nResults) {
+        Object val = stack.get(-(nArgs + 1));
+        if (val instanceof Closure) {
+            Closure c = (Closure) val;
+            System.out.printf("call %s<%d,%d>\n", c.proto.getSource(),
+                    c.proto.getLineDefined(), c.proto.getLastLineDefined());
+            callLuaClosure(nArgs, nResults, c);
+        } else {
+            throw new RuntimeException("not function!");
+        }
+    }
+
+    private void callLuaClosure(int nArgs, int nResults, Closure c) {
+        int nRegs = c.proto.getMaxStackSize();
+        int nParams = c.proto.getNumParams();
+        boolean isVararg = c.proto.getIsVararg() == 1;
+
+        // create new lua stack
+        LuaStack newStack = new LuaStack(/*nRegs + 20*/);
+        newStack.closure = c;
+
+        // pass args, pop func
+        List<Object> funcAndArgs = stack.popN(nArgs + 1);
+        newStack.pushN(funcAndArgs.subList(1, funcAndArgs.size()), nParams);
+        if (nArgs > nParams && isVararg) {
+            newStack.varargs = funcAndArgs.subList(nParams + 1, funcAndArgs.size());
+        }
+
+        // run closure
+        pushLuaStack(newStack);
+        setTop(nRegs);
+        runLuaClosure();
+        popLuaStack();
+
+        // return results
+        if (nResults != 0) {
+            List<Object> results = newStack.popN(newStack.top() - nRegs);
+            //stack.check(results.size())
+            stack.pushN(results, nResults);
+        }
+    }
+
+    private void runLuaClosure() {
+        for (;;) {
+            int i = fetch();
+            OpCode opCode = Instruction.getOpCode(i);
+            opCode.getAction().execute(i, this);
+            if (opCode == OpCode.RETURN) {
+                break;
+            }
+        }
+    }
+
     /* miscellaneous functions */
 
     @Override
@@ -389,23 +460,18 @@ public class LuaStateImpl implements LuaState, LuaVM {
     /* LuaVM */
 
     @Override
-    public int getPC() {
-        return pc;
-    }
-
-    @Override
     public void addPC(int n) {
-        pc += n;
+        stack.pc += n;
     }
 
     @Override
     public int fetch() {
-        return proto.getCode()[pc++];
+        return stack.closure.proto.getCode()[stack.pc++];
     }
 
     @Override
     public void getConst(int idx) {
-        stack.push(proto.getConstants()[idx]);
+        stack.push(stack.closure.proto.getConstants()[idx]);
     }
 
     @Override
@@ -415,6 +481,29 @@ public class LuaStateImpl implements LuaState, LuaVM {
         } else { // register
             pushValue(rk + 1);
         }
+    }
+
+    @Override
+    public int registerCount() {
+        return stack.closure.proto.getMaxStackSize();
+    }
+
+    @Override
+    public void loadVararg(int n) {
+        List<Object> varargs = stack.varargs != null
+                ? stack.varargs : Collections.emptyList();
+        if (n < 0) {
+            n = varargs.size();
+        }
+
+        //stack.check(n)
+        stack.pushN(varargs, n);
+    }
+
+    @Override
+    public void loadProto(int idx) {
+        Prototype proto = stack.closure.proto.getProtos()[idx];
+        stack.push(new Closure(proto));
     }
 
 }
