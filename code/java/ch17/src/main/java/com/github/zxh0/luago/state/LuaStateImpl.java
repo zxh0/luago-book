@@ -4,6 +4,7 @@ import com.github.zxh0.luago.api.*;
 import com.github.zxh0.luago.binchunk.BinaryChunk;
 import com.github.zxh0.luago.binchunk.Prototype;
 import com.github.zxh0.luago.binchunk.Upvalue;
+import com.github.zxh0.luago.compiler.Compiler;
 import com.github.zxh0.luago.vm.Instruction;
 import com.github.zxh0.luago.vm.OpCode;
 
@@ -580,7 +581,9 @@ public class LuaStateImpl implements LuaState, LuaVM {
 
     @Override
     public ThreadStatus load(byte[] chunk, String chunkName, String mode) {
-        Prototype proto = BinaryChunk.undump(chunk); // todo
+        Prototype proto = BinaryChunk.isBinaryChunk(chunk)
+                ? BinaryChunk.undump(chunk)
+                : Compiler.compile(new String(chunk), chunkName);
         Closure closure = new Closure(proto);
         stack.push(closure);
         if (proto.getUpvalues().length > 0) {

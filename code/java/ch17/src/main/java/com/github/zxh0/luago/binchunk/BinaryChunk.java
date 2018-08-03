@@ -18,6 +18,18 @@ public class BinaryChunk {
     private static final int    LUAC_INT         = 0x5678;
     private static final double LUAC_NUM         = 370.5;
 
+    public static boolean isBinaryChunk(byte[] data) {
+        if (data == null || data.length < 4) {
+            return false;
+        }
+        for (int i = 0; i < 4; i++) {
+            if (data[i] != LUA_SIGNATURE[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static Prototype undump(byte[] data) {
         ByteBuffer buf = ByteBuffer.wrap(data)
                 .order(ByteOrder.LITTLE_ENDIAN);
