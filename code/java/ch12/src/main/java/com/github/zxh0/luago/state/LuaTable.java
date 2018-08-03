@@ -12,6 +12,10 @@ class LuaTable {
     LuaTable metatable;
     private List<Object> arr;
     private Map<Object, Object> map;
+    // used by next()
+    private Map<Object, Object> keys;
+    private Object lastKey;
+    private boolean changed;
 
     LuaTable(int nArr, int nRec) {
         if (nArr > 0) {
@@ -51,6 +55,7 @@ class LuaTable {
             throw new RuntimeException("table index is NaN!");
         }
 
+        changed = true;
         key = floatToInteger(key);
         if (key instanceof Long) {
             int idx = ((Long) key).intValue();
@@ -121,6 +126,48 @@ class LuaTable {
                 }
             }
         }
+    }
+
+    Object nextKey(Object key) {
+        if (keys == null || (key == null && changed)) {
+            initKeys();
+            changed = false;
+        }
+
+        Object nextKey = keys.get(key);
+        if (nextKey == null && key != null && key != lastKey) {
+            throw new RuntimeException("invalid key to 'next'");
+        }
+
+        return nextKey;
+    }
+
+    private void initKeys() {
+        if (keys == null) {
+            keys = new HashMap<>();
+        } else {
+            keys.clear();
+        }
+        Object key = null;
+        if (arr != null) {
+            for (int i = 0; i < arr.size(); i++) {
+                if (arr.get(i) != null) {
+                    long nextKey = i + 1;
+                    keys.put(key, nextKey);
+                    key = nextKey;
+                }
+            }
+        }
+        if (map != null) {
+            for (Object k : map.keySet()) {
+                Object v = map.get(k);
+                if (v != null) {
+                    keys.put(key, k);
+                    key = k;
+                }
+            }
+        }
+        lastKey = key;
     }
 
 }

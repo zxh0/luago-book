@@ -732,6 +732,23 @@ public class LuaStateImpl implements LuaState, LuaVM {
         // n == 1, do nothing
     }
 
+    @Override
+    public boolean next(int idx) {
+        Object val = stack.get(idx);
+        if (val instanceof LuaTable) {
+            LuaTable t = (LuaTable) val;
+            Object key = stack.pop();
+            Object nextKey = t.nextKey(key);
+            if (nextKey != null) {
+                stack.push(nextKey);
+                stack.push(t.get(nextKey));
+                return true;
+            }
+            return false;
+        }
+        throw new RuntimeException("table expected!");
+    }
+
     /* LuaVM */
 
     @Override

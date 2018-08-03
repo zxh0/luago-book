@@ -50,8 +50,8 @@ public enum OpCode {
     RETURN  (0, 0, OpArgU, OpArgN, iABC , Instructions::_return ), // return R(A), ... ,R(A+B-2)
     FORLOOP (0, 1, OpArgR, OpArgN, iAsBx, Instructions::forLoop ), // R(A)+=R(A+2); if R(A) <?= R(A+1) then { pc+=sBx; R(A+3)=R(A) }
     FORPREP (0, 1, OpArgR, OpArgN, iAsBx, Instructions::forPrep ), // R(A)-=R(A+2); pc+=sBx
-    TFORCALL(0, 0, OpArgN, OpArgU, iABC , null                  ), // R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2));
-    TFORLOOP(0, 1, OpArgR, OpArgN, iAsBx, null                  ), // if R(A+1) ~= nil then { R(A)=R(A+1); pc += sBx }
+    TFORCALL(0, 0, OpArgN, OpArgU, iABC , Instructions::tForCall), // R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2));
+    TFORLOOP(0, 1, OpArgR, OpArgN, iAsBx, Instructions::tForLoop), // if R(A+1) ~= nil then { R(A)=R(A+1); pc += sBx }
     SETLIST (0, 0, OpArgU, OpArgU, iABC , Instructions::setList ), // R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B
     CLOSURE (0, 1, OpArgU, OpArgN, iABx , Instructions::closure ), // R(A) := closure(KPROTO[Bx])
     VARARG  (0, 1, OpArgU, OpArgN, iABC , Instructions::vararg  ), // R(A), R(A+1), ..., R(A+B-2) = vararg
