@@ -12,3 +12,18 @@ allprojects {
     }
 
 }
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'application'
+
+    sourceCompatibility = "1.8";
+    mainClassName = 'com.github.zxh0.luago.Main'
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.0'
+        testCompile 'junit:junit:4.12'
+    }
+
+}
