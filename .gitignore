@@ -7,4 +7,4 @@ luac.out
 build/
 out/
 *.iml
-*.luac
+# *.luac
