@@ -22,7 +22,7 @@ subprojects {
     mainClassName = 'com.github.zxh0.luago.Main'
 
     dependencies {
-        compileOnly 'org.projectlombok:lombok:1.18.0'
+        compileOnly 'org.projectlombok:lombok:1.18.2'
         testCompile 'junit:junit:4.12'
     }
 
