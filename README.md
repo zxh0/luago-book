@@ -7,4 +7,5 @@
 ![GoToMoon](https://github.com/zxh0/luago-book/raw/master/GoToMoon.jpg)
 
 
-# coming soon!
+* [jd.com](https://search.jd.com/Search?keyword=自己动手实现Lua&enc=utf-8)
+* [z.cn](https://www.amazon.cn/dp/B07J69W3JX)
