@@ -4,4 +4,4 @@
 ------- | --------- | ----------------- | ----------------------------- | ------------------------------------- | ----------------------------- | ---------
 12		| 2.2.1		| 第三段话			| 调式信息						| 调试信息								| ![泡泡][泡泡]					| 
 
-[泡泡]: https://github.com/zxh0/lua-book/blob/master/v1/readers/paopao.jpeg?raw=true "泡泡"
+[泡泡]: https://github.com/zxh0/luago-book/blob/master/readers/paopao.jpeg?raw=true "泡泡"
