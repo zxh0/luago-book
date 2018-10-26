@@ -67,7 +67,7 @@ func (self *reader) checkHeader() {
 	if self.readByte() != CINT_SIZE {
 		panic("int size mismatch!")
 	}
-	if self.readByte() != CSZIET_SIZE {
+	if self.readByte() != CSIZET_SIZE {
 		panic("size_t size mismatch!")
 	}
 	if self.readByte() != INSTRUCTION_SIZE {
