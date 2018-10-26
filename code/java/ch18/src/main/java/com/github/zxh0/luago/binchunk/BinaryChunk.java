@@ -11,7 +11,7 @@ public class BinaryChunk {
     private static final int    LUAC_FORMAT      = 0;
     private static final byte[] LUAC_DATA        = {0x19, (byte) 0x93, '\r', '\n', 0x1a, '\n'};
     private static final int    CINT_SIZE        = 4;
-    private static final int    CSZIET_SIZE      = 8;
+    private static final int    CSIZET_SIZE      = 8;
     private static final int    INSTRUCTION_SIZE = 4;
     private static final int    LUA_INTEGER_SIZE = 8;
     private static final int    LUA_NUMBER_SIZE  = 8;
@@ -56,7 +56,7 @@ public class BinaryChunk {
         if (buf.get() != CINT_SIZE) {
             throw new RuntimeException("int size mismatch!");
         }
-        if (buf.get() != CSZIET_SIZE) {
+        if (buf.get() != CSIZET_SIZE) {
             throw new RuntimeException("size_t size mismatch!");
         }
         if (buf.get() != INSTRUCTION_SIZE) {
