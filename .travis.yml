@@ -5,7 +5,7 @@
 language: go
 
 go:
-  - "1.9"
+  - "1.11"
 
 install:
   - curl -R -O http://www.lua.org/ftp/lua-5.3.4.tar.gz

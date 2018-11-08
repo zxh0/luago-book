@@ -17,7 +17,7 @@ luac -o ch12.luac $LUA/ch12/test.lua
 luac -o ch13.luac $LUA/ch13/test.lua
 
 cd $GO/ch01
-cd ../ch01; export GOPATH=$PWD; go run luago 2>&1 | grep 'Hello, World!'
+cd ../ch01; export GOPATH=$PWD; go run luago 2>&1 | grep -q 'Hello, World!'
 cd ../ch02; export GOPATH=$PWD; go run luago $BOOK/hw.luac | grep -q main
 cd ../ch03; export GOPATH=$PWD; go run luago $BOOK/hw.luac | grep -q LOADK
 cd ../ch04; export GOPATH=$PWD; go run luago | grep -q hello
