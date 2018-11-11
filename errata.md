@@ -17,3 +17,4 @@ VII		| 前言		| 第二段话				| 前18章的代表		| 前18章的代码		| ![m
 
 [p21]: https://github.com/zxh0/luago-book/blob/master/code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
 [p29]: https://github.com/zxh0/luago-book/blob/master/code/go/ch02/src/luago/binchunk/reader.go#L70
+[p104]: https://github.com/zxh0/luago-book/blob/master/code/go/ch06/src/luago/vm/inst_operators.go#L100
