@@ -9,6 +9,7 @@ VII		| 前言		| 第二段话				| 前18章的代表		| 前18章的代码		| ![m
 29		| 2.4.2		|[末尾倒数第3行代码][p29]	| CS`ZI`ET_SIZE		| CS`IZ`ET_SIZE		| ![小灰先生][小灰先生]	| 
 104		| 6.2.4		|[LEN指令实现代码][p104]	| `func _len(...)`	| `func length(...)`| ![小灰先生][小灰先生]	| 
 160		| 8.4.6		| 第一段话第二行			| 。。。面相对象体系。	| 。。。面向对象体系。	| ![泡泡][泡泡]			| 
+177		| 9.3.1		| `GetGlobal()`第二种实现	| `return self.GetField(t, name)`	| `return self.GetField(-1, name)`	| ![泡泡][泡泡]			| 
 290		| 16.1.2	| 图16-2					| 上下文无言			| 上下文无关			| ![moon][moon]			| 
 
 [moon]: https://github.com/zxh0/luago-book/blob/master/readers/moon.png?raw=true "moon"
