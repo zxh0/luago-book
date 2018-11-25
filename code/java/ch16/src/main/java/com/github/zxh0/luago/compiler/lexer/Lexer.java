@@ -165,7 +165,7 @@ public class Lexer {
         if (c == '.' || CharUtil.isDigit(c)) {
             return new Token(line, TOKEN_NUMBER, scanNumber());
         }
-        if (c == '_' || CharUtil.isLatter(c)) {
+        if (c == '_' || CharUtil.isLetter(c)) {
             String id = scanIdentifier();
             return Token.keywords.containsKey(id)
                     ? new Token(line, Token.keywords.get(id), id)
