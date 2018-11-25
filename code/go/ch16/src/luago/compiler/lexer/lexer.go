@@ -201,7 +201,7 @@ func (self *Lexer) NextToken() (line, kind int, token string) {
 		token := self.scanNumber()
 		return self.line, TOKEN_NUMBER, token
 	}
-	if c == '_' || isLatter(c) {
+	if c == '_' || isLetter(c) {
 		token := self.scanIdentifier()
 		if kind, found := keywords[token]; found {
 			return self.line, kind, token // keyword
@@ -429,6 +429,6 @@ func isDigit(c byte) bool {
 	return c >= '0' && c <= '9'
 }
 
-func isLatter(c byte) bool {
+func isLetter(c byte) bool {
 	return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
 }
