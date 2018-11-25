@@ -11,6 +11,7 @@ VII		| 前言		| 第二段话				| 前18章的代表						| 前18章的代码			
 160		| 8.4.6		| 第一段话第二行			| 。。。面相对象体系。					| 。。。面向对象体系。					| ![泡泡][泡泡]			| 
 177		| 9.3.1		| `GetGlobal()`第二种实现	| `return self.GetField(t, name)`	| `return self.GetField(-1, name)`	| ![泡泡][泡泡]			| 
 236		| 13.1		| 倒数第二段话第一行		| 。。。允许我们再有且仅。。。			| 。。。允许我们在有且仅。。。			| ![泡泡][泡泡]			| 
+263		| 13.3.8	| [`NextToken()`方法][p263]和下面的文字	| isLatter()			| isLetter()			| ![泡泡][泡泡]			| 
 290		| 16.1.2	| 图16-2					| 上下文无言							| 上下文无关							| ![moon][moon]			| 
 
 [moon]: https://github.com/zxh0/luago-book/blob/master/readers/moon.png?raw=true "moon"
@@ -20,4 +21,4 @@ VII		| 前言		| 第二段话				| 前18章的代表						| 前18章的代码			
 [p21]: https://github.com/zxh0/luago-book/blob/master/code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
 [p29]: https://github.com/zxh0/luago-book/blob/master/code/go/ch02/src/luago/binchunk/reader.go#L70
 [p104]: https://github.com/zxh0/luago-book/blob/master/code/go/ch06/src/luago/vm/inst_operators.go#L100
-
+[p263]: https://github.com/zxh0/luago-book/blob/master/code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
