@@ -15,12 +15,12 @@ VII		| 前言		| 第二段话								| 前18章的代表						| 前18章的代�
 263		| 13.3.8	| [`NextToken()`方法][p263]和下面的文字	| `isLatter()`						| `isLetter()`						| ![泡泡][泡泡]			| 
 290		| 16.1.2	| 图16-2									| 上下文无言							| 上下文无关							| ![moon][moon]			| 
 
-[moon]: https://github.com/zxh0/luago-book/blob/master/readers/moon.png?raw=true "moon"
-[泡泡]: https://github.com/zxh0/luago-book/blob/master/readers/paopao.jpeg?raw=true "泡泡"
-[小灰先生]: https://github.com/zxh0/luago-book/blob/master/readers/小灰先生.jpeg?raw=true "小灰先生"
+[moon]: readers/moon.png?raw=true "moon"
+[泡泡]: readers/paopao.jpeg?raw=true "泡泡"
+[小灰先生]: readers/小灰先生.jpeg?raw=true "小灰先生"
 
-[p21]: https://github.com/zxh0/luago-book/blob/master/code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
-[p29]: https://github.com/zxh0/luago-book/blob/master/code/go/ch02/src/luago/binchunk/reader.go#L70
-[p104]: https://github.com/zxh0/luago-book/blob/master/code/go/ch06/src/luago/vm/inst_operators.go#L100
-[p144]: https://github.com/zxh0/luago-book/blob/master/code/go/ch08/src/luago/state/lua_stack.go#L8
-[p263]: https://github.com/zxh0/luago-book/blob/master/code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
+[p21]: code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
+[p29]: code/go/ch02/src/luago/binchunk/reader.go#L70
+[p104]: code/go/ch06/src/luago/vm/inst_operators.go#L100
+[p144]: code/go/ch08/src/luago/state/lua_stack.go#L8
+[p263]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
