@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "luavm", "luavm\luavm.csproj", "{ECAB6AD8-7E51-4EBD-A522-2082F88A20D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECAB6AD8-7E51-4EBD-A522-2082F88A20D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECAB6AD8-7E51-4EBD-A522-2082F88A20D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECAB6AD8-7E51-4EBD-A522-2082F88A20D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECAB6AD8-7E51-4EBD-A522-2082F88A20D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7FE6E4C3-ECC6-4B4D-B972-C0C30B98CEFA}
+	EndGlobalSection
+EndGlobal
