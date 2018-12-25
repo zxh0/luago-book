@@ -12,7 +12,7 @@ VII		| 前言		| 第二段话								| 前18章的代表							| 前18章的代�
 145		| 8.2.1		|最后一段话								| 。。。vararg字段用于。。。				| 。。。varargs字段用于。。。				| ![moon][moon]			| 
 160		| 8.4.6		| 第一段话第二行							| 。。。面相对象体系。						| 。。。面向对象体系。						| ![泡泡][泡泡]			| 
 177		| 9.3.1		| `GetGlobal()`第二种实现					| `return self.GetField(t, name)`		| `return self.GetField(-1, name)`		| ![泡泡][泡泡]			| 
-1xx		| 10.2.3	| [`PushGoClosure()`方法][p1xx]			| `closure.upvals[n-1] = &upvalue{&val}`|`closure.upvals[i-1] = &upvalue{&val}` | ![孤舟钓客][孤舟钓客]	|
+193		| 10.2.3	| [`PushGoClosure()`方法][p193]			| `closure.upvals[n-1] = &upvalue{&val}`|`closure.upvals[i-1] = &upvalue{&val}` | ![孤舟钓客][孤舟钓客]	|
 236		| 13.1		| 倒数第二段话第一行						| 。。。允许我们再有且仅。。。				| 。。。允许我们在有且仅。。。				| ![泡泡][泡泡]			| 
 263		| 13.3.8	| [`NextToken()`方法][p263]和下面的文字	| `isLatter()`							|	 `isLetter()`						| ![泡泡][泡泡]			| 
 290		| 16.1.2	| 图16-2									| 上下文无言								| 上下文无关								| ![moon][moon]			| 
@@ -28,5 +28,5 @@ VII		| 前言		| 第二段话								| 前18章的代表							| 前18章的代�
 [p29]: code/go/ch02/src/luago/binchunk/reader.go#L70
 [p104]: code/go/ch06/src/luago/vm/inst_operators.go#L100
 [p144]: code/go/ch08/src/luago/state/lua_stack.go#L8
-[p1xx]: code/go/ch10/src/luago/state/api_push.go#L47
+[p193]: code/go/ch10/src/luago/state/api_push.go#L47
 [p263]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
