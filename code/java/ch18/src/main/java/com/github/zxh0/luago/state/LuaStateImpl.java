@@ -362,7 +362,7 @@ public class LuaStateImpl implements LuaState, LuaVM {
         Closure closure = new Closure(f, n);
         for (int i = n; i > 0; i--) {
             Object val = stack.pop();
-            closure.upvals[n-1] = new UpvalueHolder(val); // TODO
+            closure.upvals[i-1] = new UpvalueHolder(val); // TODO
         }
         stack.push(closure);
     }
