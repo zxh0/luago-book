@@ -1,10 +1,17 @@
+# IDEA
+*.iml
+.idea/
+out/
+
+# Gradle
+.gradle/
+build/
+
+# Go
 pkg/
 bin/
-*.DS_Store
-luac.out
-.gradle/
-.idea/
-build/
-out/
-*.iml
+
+# Others
 # *.luac
+luac.out
+*.DS_Store
