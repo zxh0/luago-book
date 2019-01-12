@@ -1,3 +1,7 @@
+# Go
+pkg/
+bin/
+
 # IDEA
 *.iml
 .idea/
@@ -7,9 +11,8 @@ out/
 .gradle/
 build/
 
-# Go
-pkg/
-bin/
+# Cargo
+target/
 
 # Others
 # *.luac
