@@ -53,29 +53,20 @@ fn print_code(f: &binary::chunk::Prototype) {
 }
 
 fn print_detail(f: &binary::chunk::Prototype) {
-    let n_consts = f.constants.len();
-    println!("constants ({}):", n_consts);
-    for i in 0..n_consts {
-        print_constant(i + 1, &f.constants[i]);
-    }
+    print_consts(f);
+    print_locals(f);
+    print_upvals(f)
+}
 
-    let n_locals = f.loc_vars.len();
-    println!("locals ({}):", n_locals);
-    for i in 0..n_locals {
-        let var = &f.loc_vars[i];
-        println!("\t{}\t{}\t{}\t{}", i, var.var_name, var.start_pc + 1, var.end_pc + 1);
-    }
-
-    let n_upvals = f.upvalues.len();
-    println!("upvalues ({}):", n_upvals);
-    for i in 0..n_upvals {
-        let upval = &f.upvalues[i];
-        let name = f.upvalue_names.get(i).map(|x| x.as_str()).unwrap_or("");
-        println!("\t{}\t{}\t{}\t{}", i, name, upval.instack, upval.idx);
+fn print_consts(f: &binary::chunk::Prototype) {
+    let n = f.constants.len();
+    println!("constants ({}):", n);
+    for i in 0..n {
+        print_const(i + 1, &f.constants[i]);
     }
 }
 
-fn print_constant(n: usize, k: &binary::chunk::Constant) {
+fn print_const(n: usize, k: &binary::chunk::Constant) {
     use binary::chunk::Constant::*;
     match k {
         Nil => println!("\t{}\tnil", n),
@@ -84,5 +75,24 @@ fn print_constant(n: usize, k: &binary::chunk::Constant) {
         Integer(i) => println!("\t{}\t{}", n, i),
         Str(Some(s)) => println!("\t{}\t{:?}", n, s),
         Str(None) => println!("\t{}\t", n),
+    }
+}
+
+fn print_locals(f: &binary::chunk::Prototype) {
+    let n = f.loc_vars.len();
+    println!("locals ({}):", n);
+    for i in 0..n {
+        let var = &f.loc_vars[i];
+        println!("\t{}\t{}\t{}\t{}", i, var.var_name, var.start_pc + 1, var.end_pc + 1);
+    }
+}
+
+fn print_upvals(f: &binary::chunk::Prototype) {
+    let n = f.upvalues.len();
+    println!("upvalues ({}):", n);
+    for i in 0..n {
+        let upval = &f.upvalues[i];
+        let name = f.upvalue_names.get(i).map(|x| x.as_str()).unwrap_or("");
+        println!("\t{}\t{}\t{}\t{}", i, name, upval.instack, upval.idx);
     }
 }
