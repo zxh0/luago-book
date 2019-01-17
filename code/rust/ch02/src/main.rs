@@ -73,8 +73,7 @@ fn print_const(n: usize, k: &binary::chunk::Constant) {
         Boolean(b) => println!("\t{}\t{}", n, b),
         Number(x) => println!("\t{}\t{}", n, x),
         Integer(i) => println!("\t{}\t{}", n, i),
-        Str(Some(s)) => println!("\t{}\t{:?}", n, s),
-        Str(None) => println!("\t{}\t", n),
+        Str(s) => println!("\t{}\t{:?}", n, s),
     }
 }
 

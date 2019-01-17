@@ -72,5 +72,5 @@ pub enum Constant {
     Boolean(bool),
     Number(f64),
     Integer(i64),
-    Str(Option<String>),
+    Str(String),
 }
