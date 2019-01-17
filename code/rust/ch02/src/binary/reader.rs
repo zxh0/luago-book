@@ -47,7 +47,11 @@ impl Reader {
         vec
     }
 
-    fn read_string(&mut self) -> Option<String> {
+    fn read_string(&mut self) -> String {
+        self.read_string0().unwrap_or_else(|| String::new())
+    }
+
+    fn read_string0(&mut self) -> Option<String> {
         let mut size = self.read_byte() as usize;
         if size == 0 {
             return None;
@@ -58,10 +62,6 @@ impl Reader {
         let bytes = self.read_bytes(size - 1);
         let string = String::from_utf8(bytes);
         string.ok() // Some(string.unwrap())
-    }
-
-    fn read_string_unwrapped(&mut self) -> String {
-        self.read_string().unwrap_or_else(|| String::new())
     }
 
     fn read_vec<T, F>(&mut self, f: F) -> Vec<T>
@@ -95,7 +95,7 @@ impl Reader {
     }
 
     fn read_proto0(&mut self, parent_source: Option<String>) -> chunk::Prototype {
-        let source = self.read_string().or(parent_source);
+        let source = self.read_string0().or(parent_source);
         chunk::Prototype {
             source: source.clone(), // debug
             line_defined: self.read_u32(),
@@ -107,9 +107,9 @@ impl Reader {
             constants: self.read_vec(|r| r.read_constant()),
             upvalues: self.read_vec(|r| r.read_upvalue()),
             protos: self.read_vec(|r| r.read_proto0(source.clone())),
-            line_info: self.read_vec(|r| r.read_u32()),    // debug
-            loc_vars: self.read_vec(|r| r.read_loc_var()), // debug
-            upvalue_names: self.read_vec(|r| r.read_string_unwrapped()), // debug
+            line_info: self.read_vec(|r| r.read_u32()),        // debug
+            loc_vars: self.read_vec(|r| r.read_loc_var()),     // debug
+            upvalue_names: self.read_vec(|r| r.read_string()), // debug
         }
     }
 
@@ -135,7 +135,7 @@ impl Reader {
 
     fn read_loc_var(&mut self) -> chunk::LocVar {
         chunk::LocVar {
-            var_name: self.read_string_unwrapped(),
+            var_name: self.read_string(),
             start_pc: self.read_u32(),
             end_pc: self.read_u32(),
         }
