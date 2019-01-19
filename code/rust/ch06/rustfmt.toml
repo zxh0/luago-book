@@ -1,0 +1,6 @@
+max_width = 120
+struct_field_align_threshold = 50
+
+ignore = [
+    "src/vm/opcodes.rs",
+]
