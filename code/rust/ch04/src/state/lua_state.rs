@@ -1,7 +1,7 @@
 use super::lua_stack::LuaStack;
 use super::lua_value::LuaValue;
-use api::consts::*;
-use api::LuaAPI;
+use crate::api::consts::*;
+use crate::api::LuaAPI;
 
 pub struct LuaState {
     stack: LuaStack,
