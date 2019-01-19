@@ -21,6 +21,7 @@ cd ../ch01; cargo run 2>&1 | grep -q 'Hello, world!'
 cd ../ch02; cargo run $BOOK/hw.luac | grep -q main
 cd ../ch03; cargo run $BOOK/hw.luac | grep -q LOADK
 cd ../ch04; cargo run luago | grep -q hello
+cd ../ch05; cargo run luago | grep -q "2.0"
 
 rm $BOOK/*.luac
 echo OK
