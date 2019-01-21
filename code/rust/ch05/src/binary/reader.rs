@@ -1,4 +1,4 @@
-use binary::chunk;
+use crate::binary::chunk;
 
 pub struct Reader {
     data: Vec<u8>,
