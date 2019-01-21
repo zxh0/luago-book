@@ -6,7 +6,7 @@ RUST=$PWD/code/rust
 LUA=$PWD/code/lua
 
 luac -o hw.luac   $LUA/ch02/hello_world.lua
-# luac -o sum.luac  $LUA/ch06/sum.lua
+luac -o sum.luac  $LUA/ch06/sum.lua
 # luac -o ch07.luac $LUA/ch07/test.lua
 # luac -o ch08.luac $LUA/ch08/test.lua
 # luac -o fact.luac $LUA/ch10/factorial.lua
@@ -20,8 +20,9 @@ cd $RUST/ch01
 cd ../ch01; cargo run 2>&1 | grep -q 'Hello, world!'
 cd ../ch02; cargo run $BOOK/hw.luac | grep -q main
 cd ../ch03; cargo run $BOOK/hw.luac | grep -q LOADK
-cd ../ch04; cargo run luago | grep -q hello
-cd ../ch05; cargo run luago | grep -q "2.0"
+cd ../ch04; cargo run | grep -q hello
+cd ../ch05; cargo run | grep -q "2.0"
+cd ../ch06; cargo run $BOOK/sum.luac | grep -q 2550
 
 rm $BOOK/*.luac
 echo OK
