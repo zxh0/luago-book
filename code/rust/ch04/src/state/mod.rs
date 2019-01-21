@@ -4,6 +4,6 @@ mod lua_value;
 
 pub use self::lua_state::LuaState;
 
-pub fn new_lua_state() -> lua_state::LuaState {
-    lua_state::LuaState::new()
+pub fn new_lua_state() -> LuaState {
+    LuaState::new()
 }
