@@ -1,4 +1,4 @@
-use vm::opcodes::OPCODES;
+use super::opcodes::OPCODES;
 
 const MAXARG_BX: isize = (1 << 18) - 1; // 262143
 const MAXARG_SBX: isize = MAXARG_BX >> 1; // 131071
