@@ -4,8 +4,8 @@ use std::env;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
-use vm::instruction::Instruction;
-use vm::opcodes::*;
+use crate::vm::instruction::Instruction;
+use crate::vm::opcodes::*;
 
 fn main() -> io::Result<()> {
     if env::args().count() > 1 {
@@ -122,7 +122,7 @@ fn print_consts(f: &binary::chunk::Prototype) {
 }
 
 fn print_const(n: usize, k: &binary::chunk::Constant) {
-    use binary::chunk::Constant::*;
+    use crate::binary::chunk::Constant::*;
     match k {
         Nil => println!("\t{}\tnil", n),
         Boolean(b) => println!("\t{}\t{}", n, b),
