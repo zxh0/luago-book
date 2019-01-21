@@ -1,7 +1,7 @@
 mod api;
 mod state;
-use api::{consts::*, LuaAPI};
-use state::LuaState;
+use crate::api::{consts::*, LuaAPI};
+use crate::state::LuaState;
 
 fn main() {
     let mut ls = state::new_lua_state();
