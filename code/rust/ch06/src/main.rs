@@ -1,28 +1,45 @@
 mod api;
+mod binary;
 mod state;
-use api::{consts::*, LuaAPI};
-use state::LuaState;
+mod vm;
+use crate::api::{consts::*, LuaAPI, LuaVM};
+use crate::binary::chunk::Prototype;
+use crate::state::LuaState;
+use crate::vm::instruction::Instruction;
+use std::env;
+use std::fs::File;
+use std::io;
+use std::io::prelude::*;
 
-fn main() {
-    let mut ls = state::new_lua_state();
+fn main() -> io::Result<()> {
+    if env::args().count() > 1 {
+        let filename = env::args().nth(1).unwrap();
+        let mut file = File::open(filename)?;
 
-    ls.push_integer(1);
-    ls.push_string("2.0".to_string());
-    ls.push_string("3.0".to_string());
-    ls.push_number(4.0);
-    print_stack(&ls);
+        let mut data = Vec::new();
+        file.read_to_end(&mut data)?;
 
-    ls.arith(LUA_OPADD);
-    print_stack(&ls);
-    ls.arith(LUA_OPBNOT);
-    print_stack(&ls);
-    ls.len(2);
-    print_stack(&ls);
-    ls.concat(3);
-    print_stack(&ls);
-    let x = ls.compare(1, 2, LUA_OPEQ);
-    ls.push_boolean(x);
-    print_stack(&ls);
+        let proto = binary::undump(data);
+        lua_main(proto);
+    }
+    Ok(())
+}
+
+fn lua_main(proto: Prototype) {
+    let nregs = proto.max_stack_size;
+    let mut ls = state::new_lua_state((nregs + 8) as usize, proto);
+    ls.set_top(nregs as isize);
+    loop {
+        let pc = ls.pc();
+        let instr = ls.fetch();
+        if instr.opcode() != vm::opcodes::OP_RETURN {
+            instr.execute(&mut ls);
+            print!("[{:04}] {} ", pc + 1, instr.opname());
+            print_stack(&ls);
+        } else {
+            break;
+        }
+    }
 }
 
 fn print_stack(ls: &LuaState) {
