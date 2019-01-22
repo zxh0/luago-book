@@ -7,7 +7,7 @@ LUA=$PWD/code/lua
 
 luac -o hw.luac   $LUA/ch02/hello_world.lua
 luac -o sum.luac  $LUA/ch06/sum.lua
-# luac -o ch07.luac $LUA/ch07/test.lua
+luac -o ch07.luac $LUA/ch07/test.lua
 # luac -o ch08.luac $LUA/ch08/test.lua
 # luac -o fact.luac $LUA/ch10/factorial.lua
 # luac -o fib.luac  $LUA/ch10/fibonacci.lua
@@ -23,6 +23,7 @@ cd ../ch03; cargo run $BOOK/hw.luac | grep -q LOADK
 cd ../ch04; cargo run | grep -q hello
 cd ../ch05; cargo run | grep -q "2.0"
 cd ../ch06; cargo run $BOOK/sum.luac | grep -q 2550
+cd ../ch07; cargo run $BOOK/ch07.luac | grep -q cBaBar
 
 rm $BOOK/*.luac
 echo OK

@@ -2,6 +2,7 @@ use super::instr_for::*;
 use super::instr_load::*;
 use super::instr_misc::*;
 use super::instr_ops::*;
+use super::instr_table::*;
 use super::opcodes::*;
 use crate::api::LuaVM;
 
@@ -86,11 +87,11 @@ impl Instruction for u32 {
             OP_LOADNIL => load_nil(self, vm),
             // OP_GETUPVAL => (),
             // OP_GETTABUP => (),
-            // OP_GETTABLE => (),
+            OP_GETTABLE => get_table(self, vm),
             // OP_SETTABUP => (),
             // OP_SETUPVAL => (),
-            // OP_SETTABLE => (),
-            // OP_NEWTABLE => (),
+            OP_SETTABLE => set_table(self, vm),
+            OP_NEWTABLE => new_table(self, vm),
             // OP_SELF => (),
             OP_ADD => add(self, vm),
             OP_SUB => sub(self, vm),
@@ -122,7 +123,7 @@ impl Instruction for u32 {
             OP_FORPREP => for_prep(self, vm),
             // OP_TFORCALL => (),
             // OP_TFORLOOP => (),
-            // OP_SETLIST => (),
+            OP_SETLIST => set_list(self, vm),
             // OP_CLOSURE => (),
             // OP_VARARG => (),
             // OP_EXTRAARG => (),
