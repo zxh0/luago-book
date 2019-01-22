@@ -8,6 +8,7 @@ VII		| 前言		| 第二段话								| 前18章的代表							| 前18章的代�
 21		| 2.3.3		|[末尾倒数第7行代码][p21]					| `CSZIET_SIZE`							| `CSIZET_SIZE`							| ![小灰先生][小灰先生]	| 
 29		| 2.4.2		|[末尾倒数第3行代码][p29]					| `CSZIET_SIZE`							| `CSIZET_SIZE`							| ![小灰先生][小灰先生]	| 
 104		| 6.2.4		|[LEN指令实现代码][p104]					| `func _len(...)`						| `func length(...)`					| ![小灰先生][小灰先生]	| 
+122		| 7.2		|[多处][p122]							| `_floatToIntger()`					| `_floatToInteger()`					| ![moon][moon]			| 
 144		| 8.2.1		|[luaStack结构体][p144]					| `closure *luaClosure`					| `closure *closure`					| ![小灰先生][小灰先生]	| 
 145		| 8.2.1		|最后一段话								| 。。。vararg字段用于。。。				| 。。。varargs字段用于。。。				| ![moon][moon]			| 
 160		| 8.4.6		| 第一段话第二行							| 。。。面相对象体系。						| 。。。面向对象体系。						| ![泡泡][泡泡]			| 
@@ -27,6 +28,7 @@ VII		| 前言		| 第二段话								| 前18章的代表							| 前18章的代�
 [p21]: code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
 [p29]: code/go/ch02/src/luago/binchunk/reader.go#L70
 [p104]: code/go/ch06/src/luago/vm/inst_operators.go#L100
+[p122]: code/go/ch07/src/luago/state/lua_table.go#L36
 [p144]: code/go/ch08/src/luago/state/lua_stack.go#L8
 [p193]: code/go/ch10/src/luago/state/api_push.go#L47
 [p263]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
