@@ -50,6 +50,17 @@ impl LuaStack {
         }
     }
 
+    #[allow(dead_code)]
+    pub fn peek(&self, idx: isize) -> &LuaValue {
+        let abs_idx = self.abs_index(idx);
+        if abs_idx > 0 && abs_idx <= self.top() {
+            let idx = abs_idx as usize - 1;
+            &self.vec[idx]
+        } else {
+            &LuaValue::Nil
+        }
+    }
+
     pub fn set(&mut self, idx: isize, val: LuaValue) {
         let abs_idx = self.abs_index(idx);
         if abs_idx > 0 && abs_idx <= self.top() {
