@@ -33,7 +33,7 @@ func (self *luaTable) len() int {
 }
 
 func (self *luaTable) get(key luaValue) luaValue {
-	key = _floatToIntger(key)
+	key = _floatToInteger(key)
 	if idx, ok := key.(int64); ok {
 		if idx >= 1 && idx <= int64(len(self.arr)) {
 			return self.arr[idx-1]
@@ -42,7 +42,7 @@ func (self *luaTable) get(key luaValue) luaValue {
 	return self._map[key]
 }
 
-func _floatToIntger(key luaValue) luaValue {
+func _floatToInteger(key luaValue) luaValue {
 	if f, ok := key.(float64); ok {
 		if i, ok := number.FloatToInteger(f); ok {
 			return i
@@ -60,7 +60,7 @@ func (self *luaTable) put(key, val luaValue) {
 	}
 
 	self.changed = true
-	key = _floatToIntger(key)
+	key = _floatToInteger(key)
 	if idx, ok := key.(int64); ok && idx >= 1 {
 		arrLen := int64(len(self.arr))
 		if idx <= arrLen {
