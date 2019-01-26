@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 pub const LUA_SIGNATURE: [u8; 4] = [0x1b, 0x4c, 0x75, 0x61]; // "\x1bLua"
 pub const LUAC_VERSION: u8 = 0x53;
 pub const LUAC_FORMAT: u8 = 0;
@@ -50,7 +52,7 @@ pub struct Prototype {
     pub code: Vec<u32>,
     pub constants: Vec<Constant>,
     pub upvalues: Vec<Upvalue>,
-    pub protos: Vec<Prototype>,
+    pub protos: Vec<Rc<Prototype>>,
     pub line_info: Vec<u32>,        // debug
     pub loc_vars: Vec<LocVar>,      // debug
     pub upvalue_names: Vec<String>, // debug

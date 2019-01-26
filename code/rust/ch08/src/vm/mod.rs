@@ -1,4 +1,5 @@
 mod fpb;
+mod instr_call;
 mod instr_for;
 mod instr_load;
 mod instr_misc;

@@ -1,4 +1,5 @@
-use crate::binary::chunk;
+use crate::binary::chunk::*;
+use std::rc::Rc;
 
 pub struct Reader {
     data: Vec<u8>,
@@ -77,26 +78,26 @@ impl Reader {
     }
 
     pub fn check_header(&mut self) {
-        assert_eq!(self.read_bytes(4), chunk::LUA_SIGNATURE, "not a precompiled chunk!");
-        assert_eq!(self.read_byte(), chunk::LUAC_VERSION, "version mismatch!");
-        assert_eq!(self.read_byte(), chunk::LUAC_FORMAT, "format mismatch!");
-        assert_eq!(self.read_bytes(6), chunk::LUAC_DATA, "corrupted!");
-        assert_eq!(self.read_byte(), chunk::CINT_SIZE, "int size mismatch!");
-        assert_eq!(self.read_byte(), chunk::CSIZET_SIZE, "size_t size mismatch!");
-        assert_eq!(self.read_byte(), chunk::INSTRUCTION_SIZE, "instruction size mismatch!");
-        assert_eq!(self.read_byte(), chunk::LUA_INTEGER_SIZE, "lua_Integer size mismatch!");
-        assert_eq!(self.read_byte(), chunk::LUA_NUMBER_SIZE, "lua_Number size mismatch!");
-        assert_eq!(self.read_lua_integer(), chunk::LUAC_INT, "endianness mismatch!");
-        assert_eq!(self.read_lua_number(), chunk::LUAC_NUM, "float format mismatch!");
+        assert_eq!(self.read_bytes(4), LUA_SIGNATURE, "not a precompiled chunk!");
+        assert_eq!(self.read_byte(), LUAC_VERSION, "version mismatch!");
+        assert_eq!(self.read_byte(), LUAC_FORMAT, "format mismatch!");
+        assert_eq!(self.read_bytes(6), LUAC_DATA, "corrupted!");
+        assert_eq!(self.read_byte(), CINT_SIZE, "int size mismatch!");
+        assert_eq!(self.read_byte(), CSIZET_SIZE, "size_t size mismatch!");
+        assert_eq!(self.read_byte(), INSTRUCTION_SIZE, "instruction size mismatch!");
+        assert_eq!(self.read_byte(), LUA_INTEGER_SIZE, "lua_Integer size mismatch!");
+        assert_eq!(self.read_byte(), LUA_NUMBER_SIZE, "lua_Number size mismatch!");
+        assert_eq!(self.read_lua_integer(), LUAC_INT, "endianness mismatch!");
+        assert_eq!(self.read_lua_number(), LUAC_NUM, "float format mismatch!");
     }
 
-    pub fn read_proto(&mut self) -> chunk::Prototype {
+    pub fn read_proto(&mut self) -> Rc<Prototype> {
         self.read_proto0(None)
     }
 
-    fn read_proto0(&mut self, parent_source: Option<String>) -> chunk::Prototype {
+    fn read_proto0(&mut self, parent_source: Option<String>) -> Rc<Prototype> {
         let source = self.read_string0().or(parent_source);
-        chunk::Prototype {
+        Rc::new(Prototype {
             source: source.clone(), // debug
             line_defined: self.read_u32(),
             last_line_defined: self.read_u32(),
@@ -110,31 +111,31 @@ impl Reader {
             line_info: self.read_vec(|r| r.read_u32()),        // debug
             loc_vars: self.read_vec(|r| r.read_loc_var()),     // debug
             upvalue_names: self.read_vec(|r| r.read_string()), // debug
-        }
+        })
     }
 
-    fn read_constant(&mut self) -> chunk::Constant {
+    fn read_constant(&mut self) -> Constant {
         let tag = self.read_byte();
         match tag {
-            chunk::TAG_NIL => chunk::Constant::Nil,
-            chunk::TAG_BOOLEAN => chunk::Constant::Boolean(self.read_byte() != 0),
-            chunk::TAG_INTEGER => chunk::Constant::Integer(self.read_lua_integer()),
-            chunk::TAG_NUMBER => chunk::Constant::Number(self.read_lua_number()),
-            chunk::TAG_SHORT_STR => chunk::Constant::Str(self.read_string()),
-            chunk::TAG_LONG_STR => chunk::Constant::Str(self.read_string()),
+            TAG_NIL => Constant::Nil,
+            TAG_BOOLEAN => Constant::Boolean(self.read_byte() != 0),
+            TAG_INTEGER => Constant::Integer(self.read_lua_integer()),
+            TAG_NUMBER => Constant::Number(self.read_lua_number()),
+            TAG_SHORT_STR => Constant::Str(self.read_string()),
+            TAG_LONG_STR => Constant::Str(self.read_string()),
             _ => panic!("corrupted!"),
         }
     }
 
-    fn read_upvalue(&mut self) -> chunk::Upvalue {
-        chunk::Upvalue {
+    fn read_upvalue(&mut self) -> Upvalue {
+        Upvalue {
             instack: self.read_byte(),
             idx: self.read_byte(),
         }
     }
 
-    fn read_loc_var(&mut self) -> chunk::LocVar {
-        chunk::LocVar {
+    fn read_loc_var(&mut self) -> LocVar {
+        LocVar {
             var_name: self.read_string(),
             start_pc: self.read_u32(),
             end_pc: self.read_u32(),

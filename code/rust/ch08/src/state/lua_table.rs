@@ -1,31 +1,18 @@
 use super::lua_value::LuaValue;
-use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone)]
 pub struct LuaTable {
     arr: Vec<LuaValue>,
     map: HashMap<LuaValue, LuaValue>,
+    rdm: usize, // hash code
 }
 
-// the trait `Hash` is not implemented for `HashMap`
 impl Hash for LuaTable {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.arr.hash(state);
-
-        let mut h = 0_u64;
-        for (k, v) in self.map.iter() {
-            h += hash_code(&k) ^ hash_code(&v);
-        }
-        state.write_u64(h);
+        self.rdm.hash(state);
     }
-}
-
-fn hash_code<T: Hash>(t: &T) -> u64 {
-    let mut s = DefaultHasher::new();
-    t.hash(&mut s);
-    s.finish()
 }
 
 impl LuaTable {
@@ -33,6 +20,7 @@ impl LuaTable {
         LuaTable {
             arr: Vec::with_capacity(narr),
             map: HashMap::with_capacity(nrec),
+            rdm: super::math::random(),
         }
     }
 
@@ -114,7 +102,11 @@ impl LuaTable {
 }
 
 fn to_index(key: &LuaValue) -> Option<usize> {
-    if let LuaValue::Number(n) = key {
+    if let LuaValue::Integer(i) = key {
+        if *i >= 1 {
+            return Some(*i as usize);
+        }
+    } else if let LuaValue::Number(n) = key {
         if let Some(i) = super::math::float_to_integer(*n) {
             if i >= 1 {
                 return Some(i as usize);
