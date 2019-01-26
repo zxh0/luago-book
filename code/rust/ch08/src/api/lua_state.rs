@@ -53,4 +53,7 @@ pub trait LuaState {
     fn set_table(&mut self, idx: isize);
     fn set_field(&mut self, idx: isize, k: &str);
     fn set_i(&mut self, idx: isize, i: i64);
+    /* 'load' and 'call' functions (load and run Lua code) */
+    fn load(&mut self, chunk: Vec<u8>, chunk_name: &str, mode: &str) -> u8;
+    fn call(&mut self, nargs: usize, nresults: isize);
 }
