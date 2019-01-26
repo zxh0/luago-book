@@ -2,10 +2,11 @@ use super::lua_table::LuaTable;
 use super::math::float_to_integer;
 use crate::api::consts::*;
 use std::cell::RefCell;
+use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone)]
 pub enum LuaValue {
     Nil,
     Boolean(bool),
@@ -13,6 +14,39 @@ pub enum LuaValue {
     Number(f64),
     Str(String),                  // TODO
     Table(Rc<RefCell<LuaTable>>), // https://doc.rust-lang.org/std/cell/index.html#introducing-mutability-inside-of-something-immutable
+}
+
+impl fmt::Debug for LuaValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            LuaValue::Nil => write!(f, "(nil)"),
+            LuaValue::Boolean(b) => write!(f, "({})", b),
+            LuaValue::Integer(i) => write!(f, "({})", i),
+            LuaValue::Number(n) => write!(f, "({})", n),
+            LuaValue::Str(s) => write!(f, "({})", s),
+            LuaValue::Table(_) => write!(f, "(table)"),
+        }
+    }
+}
+
+impl PartialEq for LuaValue {
+    fn eq(&self, other: &LuaValue) -> bool {
+        if let (LuaValue::Nil, LuaValue::Nil) = (self, other) {
+            true
+        } else if let (LuaValue::Boolean(x), LuaValue::Boolean(y)) = (self, other) {
+            x == y
+        } else if let (LuaValue::Integer(x), LuaValue::Integer(y)) = (self, other) {
+            x == y
+        } else if let (LuaValue::Number(x), LuaValue::Number(y)) = (self, other) {
+            x == y // TODO
+        } else if let (LuaValue::Str(x), LuaValue::Str(y)) = (self, other) {
+            x == y
+        } else if let (LuaValue::Table(x), LuaValue::Table(y)) = (self, other) {
+            Rc::ptr_eq(x, y)
+        } else {
+            false
+        }
+    }
 }
 
 // the trait `std::cmp::Eq` is not implemented for `f64`
