@@ -507,7 +507,7 @@ impl LuaState {
         loop {
             let instr = self.fetch();
             instr.execute(self);
-            //print_stack(instr.opname(), self);
+            // print_stack(instr.opname(), self);
             if instr.opcode() == crate::vm::opcodes::OP_RETURN {
                 break;
             }
@@ -515,6 +515,7 @@ impl LuaState {
     }
 }
 
+// debug
 fn print_stack(opname: &str, ls: &LuaState) {
     print!("  {} ", opname);
     let top = ls.get_top();
