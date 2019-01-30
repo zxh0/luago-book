@@ -1,7 +1,7 @@
 use super::closure::Closure;
 use super::lua_table::LuaTable;
 use super::math::float_to_integer;
-use crate::api::consts::*;
+use crate::api::{consts::*, RustFn};
 use crate::binary::chunk::Prototype;
 use std::cell::RefCell;
 use std::fmt;
@@ -79,7 +79,11 @@ impl LuaValue {
     }
 
     pub fn new_lua_closure(proto: Rc<Prototype>) -> LuaValue {
-        LuaValue::Function(Rc::new(Closure::new(proto)))
+        LuaValue::Function(Rc::new(Closure::new_lua_closure(proto)))
+    }
+
+    pub fn new_rust_closure(f: RustFn) -> LuaValue {
+        LuaValue::Function(Rc::new(Closure::new_rust_closure(f)))
     }
 
     pub fn is_nil(&self) -> bool {

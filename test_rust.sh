@@ -25,6 +25,7 @@ cd ../ch05; cargo run | grep -q "2.0"
 cd ../ch06; cargo run $BOOK/sum.luac | grep -q 2550
 cd ../ch07; cargo run $BOOK/ch07.luac | grep -q cBaBar
 cd ../ch08; cargo run $BOOK/ch08.luac | grep -q call
+cd ../ch09; cargo run $BOOK/hw.luac | grep -q "Hello, World!"
 
 rm $BOOK/*.luac
 echo OK

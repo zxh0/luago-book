@@ -5,5 +5,6 @@ mod instr_load;
 mod instr_misc;
 mod instr_ops;
 mod instr_table;
+mod instr_upval;
 pub mod instruction;
 pub mod opcodes;

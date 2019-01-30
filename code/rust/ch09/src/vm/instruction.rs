@@ -4,6 +4,7 @@ use super::instr_load::*;
 use super::instr_misc::*;
 use super::instr_ops::*;
 use super::instr_table::*;
+use super::instr_upval::*;
 use super::opcodes::*;
 use crate::api::LuaVM;
 
@@ -87,7 +88,7 @@ impl Instruction for u32 {
             OP_LOADBOOL => load_bool(self, vm),
             OP_LOADNIL => load_nil(self, vm),
             // OP_GETUPVAL => (),
-            // OP_GETTABUP => (),
+            OP_GETTABUP => get_tab_up(self, vm),
             OP_GETTABLE => get_table(self, vm),
             // OP_SETTABUP => (),
             // OP_SETUPVAL => (),
