@@ -322,6 +322,10 @@ impl LuaAPI for LuaState {
         self.stack_mut().push(LuaValue::new_rust_closure(f));
     }
 
+    fn push_rust_closure(&mut self, f: RustFn, n: usize) {
+        unimplemented!();
+    }
+
     fn push_global_table(&mut self) {
         if let LuaValue::Table(t) = &self.registry {
             let global = t.borrow().get(&LUA_RIDX_GLOBALS);
