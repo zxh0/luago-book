@@ -1,3 +1,8 @@
+pub const LUA_MINSTACK: usize = 20;
+pub const LUAI_MAXSTACK: usize = 1000000;
+pub const LUA_REGISTRYINDEX: isize = -(LUAI_MAXSTACK as isize) - 1000;
+pub const LUA_RIDX_GLOBALS: isize = 2;
+
 /* basic types */
 pub const LUA_TNONE: i8 = -1;
 pub const LUA_TNIL: i8 = 0;

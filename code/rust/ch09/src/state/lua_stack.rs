@@ -1,18 +1,21 @@
 use super::closure::Closure;
 use super::lua_value::LuaValue;
+use crate::api::consts::LUA_REGISTRYINDEX;
 use std::rc::Rc;
 
 pub struct LuaStack {
     vec: Vec<LuaValue>, // slots
-    pub closure: Rc<Closure>,
+    registry: LuaValue,
+    pub closure: Rc<Closure>, // TODO
     pub varargs: Vec<LuaValue>,
     pub pc: isize,
 }
 
 impl LuaStack {
-    pub fn new(size: usize, closure: Rc<Closure>) -> LuaStack {
+    pub fn new(size: usize, registry: LuaValue, closure: Rc<Closure>) -> LuaStack {
         LuaStack {
             vec: Vec::with_capacity(size),
+            registry: registry,
             closure: closure,
             varargs: Vec::new(),
             pc: 0,
@@ -77,7 +80,7 @@ impl LuaStack {
     }
 
     pub fn abs_index(&self, idx: isize) -> isize {
-        if idx >= 0 {
+        if idx >= 0 || idx <= LUA_REGISTRYINDEX {
             idx
         } else {
             idx + self.top() + 1
@@ -85,11 +88,17 @@ impl LuaStack {
     }
 
     pub fn is_valid(&self, idx: isize) -> bool {
+        if idx == LUA_REGISTRYINDEX {
+            return true;
+        }
         let abs_idx = self.abs_index(idx);
         abs_idx > 0 && abs_idx <= self.top()
     }
 
     pub fn get(&self, idx: isize) -> LuaValue {
+        if idx == LUA_REGISTRYINDEX {
+            return self.registry.clone();
+        }
         let abs_idx = self.abs_index(idx);
         if abs_idx > 0 && abs_idx <= self.top() {
             let idx = abs_idx as usize - 1;
@@ -111,6 +120,10 @@ impl LuaStack {
     }
 
     pub fn set(&mut self, idx: isize, val: LuaValue) {
+        if idx == LUA_REGISTRYINDEX {
+            self.registry = val;
+            return;
+        }
         let abs_idx = self.abs_index(idx);
         if abs_idx > 0 && abs_idx <= self.top() {
             let idx = abs_idx as usize - 1;
