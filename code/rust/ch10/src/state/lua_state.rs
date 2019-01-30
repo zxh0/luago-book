@@ -115,6 +115,10 @@ impl LuaAPI for LuaState {
         self.stack().abs_index(idx)
     }
 
+    fn upvalue_index(&self, idx: isize) -> isize {
+        LUA_REGISTRYINDEX - idx
+    }
+
     fn check_stack(&mut self, n: usize) -> bool {
         self.stack_mut().check(n);
         true

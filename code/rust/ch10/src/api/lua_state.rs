@@ -5,6 +5,7 @@ pub trait LuaState {
     /* basic stack manipulation */
     fn get_top(&self) -> isize;
     fn abs_index(&self, idx: isize) -> isize;
+    fn upvalue_index(&self, idx: isize) -> isize; // TODO
     fn check_stack(&mut self, n: usize) -> bool;
     fn pop(&mut self, n: usize);
     fn copy(&mut self, from_idx: isize, to_idx: isize);
