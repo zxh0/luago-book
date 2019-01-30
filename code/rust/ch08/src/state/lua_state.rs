@@ -395,7 +395,7 @@ impl LuaAPI for LuaState {
     fn get_i(&mut self, idx: isize, i: i64) -> i8 {
         let t = self.stack().get(idx);
         let k = LuaValue::Integer(i);
-        return self.get_table_impl(&t, &k);
+        self.get_table_impl(&t, &k)
     }
 
     /* set functions (stack -> Lua) */
