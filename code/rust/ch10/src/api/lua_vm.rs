@@ -7,4 +7,5 @@ pub trait LuaVM: super::lua_state::LuaState {
     fn register_count(&self) -> usize;
     fn load_vararg(&mut self, n: isize);
     fn load_proto(&mut self, idx: usize);
+    fn close_upvalues(&mut self, a: isize);
 }

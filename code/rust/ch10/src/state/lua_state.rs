@@ -102,6 +102,10 @@ impl LuaVM for LuaState {
         let closure = LuaValue::new_lua_closure(proto);
         self.stack_mut().push(closure);
     }
+
+    fn close_upvalues(&mut self, a: isize) {
+        unimplemented!();
+    }
 }
 
 impl LuaAPI for LuaState {
