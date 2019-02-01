@@ -83,7 +83,7 @@ impl LuaValue {
     }
 
     pub fn new_rust_closure(f: RustFn) -> LuaValue {
-        LuaValue::Function(Rc::new(Closure::new_rust_closure(f)))
+        LuaValue::Function(Rc::new(Closure::new_rust_closure(f, 0)))
     }
 
     pub fn is_nil(&self) -> bool {

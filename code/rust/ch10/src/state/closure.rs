@@ -3,7 +3,9 @@ use crate::binary::chunk::Prototype;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
 
-struct Upvalue {}
+enum Upvalue {
+    Nil,
+}
 
 pub struct Closure {
     pub proto: Rc<Prototype>,
@@ -29,22 +31,31 @@ impl Closure {
     }
 
     pub fn new_lua_closure(proto: Rc<Prototype>) -> Closure {
+        let uvs = new_upvalue_vec(proto.upvalues.len());
         Closure {
             proto: proto,
             rust_fn: None,
-            upvals: vec![],
+            upvals: uvs,
             rdm: super::math::random(),
         }
     }
 
-    pub fn new_rust_closure(f: RustFn) -> Closure {
+    pub fn new_rust_closure(f: RustFn, nuvs: usize) -> Closure {
         Closure {
             proto: new_empty_prototype(), // TODO
             rust_fn: Some(f),
-            upvals: vec![],
+            upvals: new_upvalue_vec(nuvs),
             rdm: super::math::random(),
         }
     }
+}
+
+fn new_upvalue_vec(n: usize) -> Vec<Upvalue> {
+    let mut vec = Vec::with_capacity(n);
+    for _ in 0..n {
+        vec.push(Upvalue::Nil);
+    }
+    vec
 }
 
 fn new_empty_prototype() -> Rc<Prototype> {
