@@ -3,9 +3,12 @@ use crate::binary::chunk::Prototype;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
 
+struct Upvalue {}
+
 pub struct Closure {
     pub proto: Rc<Prototype>,
     pub rust_fn: Option<RustFn>,
+    upvals: Vec<Upvalue>,
     rdm: usize,
 }
 
@@ -20,6 +23,7 @@ impl Closure {
         Closure {
             proto: new_empty_prototype(), // TODO
             rust_fn: None,
+            upvals: vec![],
             rdm: super::math::random(),
         }
     }
@@ -28,6 +32,7 @@ impl Closure {
         Closure {
             proto: proto,
             rust_fn: None,
+            upvals: vec![],
             rdm: super::math::random(),
         }
     }
@@ -36,6 +41,7 @@ impl Closure {
         Closure {
             proto: new_empty_prototype(), // TODO
             rust_fn: Some(f),
+            upvals: vec![],
             rdm: super::math::random(),
         }
     }
