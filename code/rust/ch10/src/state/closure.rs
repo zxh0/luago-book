@@ -3,14 +3,15 @@ use crate::binary::chunk::Prototype;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
 
-enum Upvalue {
+pub enum Upvalue {
     Nil,
+    Globals, // TODO
 }
 
 pub struct Closure {
     pub proto: Rc<Prototype>,
     pub rust_fn: Option<RustFn>,
-    upvals: Vec<Upvalue>,
+    pub upvals: Vec<Upvalue>,
     rdm: usize,
 }
 

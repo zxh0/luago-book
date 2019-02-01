@@ -1,4 +1,4 @@
-use super::closure::Closure;
+use super::closure::{Closure, Upvalue};
 use super::lua_stack::LuaStack;
 use super::lua_value::LuaValue;
 use crate::api::{consts::*, LuaAPI, LuaVM, RustFn};
@@ -480,8 +480,15 @@ impl LuaAPI for LuaState {
 
     fn load(&mut self, chunk: Vec<u8>, _chunk_name: &str, _mode: &str) -> u8 {
         let proto = crate::binary::undump(chunk);
-        let c = LuaValue::new_lua_closure(proto);
-        self.stack_mut().push(c);
+        let nuvs = proto.upvalues.len();
+        let val = LuaValue::new_lua_closure(proto);
+        if nuvs > 0 {
+            if let LuaValue::Function(c) = &val {
+                // TODO
+                // c.upvals[0] = Upvalue::Globals;
+            }
+        }
+        self.stack_mut().push(val);
         0 // TODO
     }
 
