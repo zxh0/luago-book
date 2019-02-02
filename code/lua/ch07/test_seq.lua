@@ -7,5 +7,5 @@ t[2]=nil
 if #t ~= 1 then
   fail()
 else
-  print("ok")
+  -- print("ok")
 end

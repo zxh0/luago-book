@@ -82,6 +82,8 @@ impl LuaTable {
         while !self.arr.is_empty() {
             if self.arr.last().unwrap().is_nil() {
                 self.arr.pop();
+            } else {
+                break;
             }
         }
     }
