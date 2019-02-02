@@ -4,7 +4,7 @@ use std::hash::{Hash, Hasher};
 
 #[derive(Clone)]
 pub struct LuaTable {
-    arr: Vec<LuaValue>,
+    arr: Vec<LuaValue>, // TODO RefCell
     map: HashMap<LuaValue, LuaValue>,
     rdm: usize, // hash code
 }
