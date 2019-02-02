@@ -3,7 +3,6 @@ use super::lua_table::LuaTable;
 use super::math::float_to_integer;
 use crate::api::{consts::*, RustFn};
 use crate::binary::chunk::Prototype;
-use std::cell::RefCell;
 use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
@@ -14,8 +13,8 @@ pub enum LuaValue {
     Boolean(bool),
     Integer(i64),
     Number(f64),
-    Str(String),                  // TODO
-    Table(Rc<RefCell<LuaTable>>), // https://doc.rust-lang.org/std/cell/index.html#introducing-mutability-inside-of-something-immutable
+    Str(String), // TODO
+    Table(Rc<LuaTable>),
     Function(Rc<Closure>),
 }
 
@@ -67,7 +66,7 @@ impl Hash for LuaValue {
             LuaValue::Integer(i) => i.hash(state),
             LuaValue::Number(n) => n.to_bits().hash(state),
             LuaValue::Str(s) => s.hash(state),
-            LuaValue::Table(t) => t.borrow().hash(state),
+            LuaValue::Table(t) => t.hash(state),
             LuaValue::Function(c) => c.hash(state),
         }
     }
@@ -75,7 +74,7 @@ impl Hash for LuaValue {
 
 impl LuaValue {
     pub fn new_table(narr: usize, nrec: usize) -> LuaValue {
-        LuaValue::Table(Rc::new(RefCell::new(LuaTable::new(narr, nrec))))
+        LuaValue::Table(Rc::new(LuaTable::new(narr, nrec)))
     }
 
     pub fn new_lua_closure(proto: Rc<Prototype>) -> LuaValue {

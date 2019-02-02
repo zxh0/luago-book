@@ -18,7 +18,7 @@ impl LuaState {
         let registry = LuaValue::new_table(0, 0);
         if let LuaValue::Table(t) = &registry {
             let globals = LuaValue::new_table(0, 0);
-            t.borrow_mut().put(LUA_RIDX_GLOBALS, globals);
+            t.put(LUA_RIDX_GLOBALS, globals);
         }
 
         let fake_closure = Rc::new(Closure::new_fake_closure());
@@ -332,7 +332,7 @@ impl LuaAPI for LuaState {
 
     fn push_global_table(&mut self) {
         if let LuaValue::Table(t) = &self.registry {
-            let global = t.borrow().get(&LUA_RIDX_GLOBALS);
+            let global = t.get(&LUA_RIDX_GLOBALS);
             self.stack_mut().push(global);
         }
     }
@@ -375,7 +375,7 @@ impl LuaAPI for LuaState {
     fn len(&mut self, idx: isize) {
         let _len = match self.stack().get(idx) {
             LuaValue::Str(s) => s.len(),
-            LuaValue::Table(t) => t.borrow().len(),
+            LuaValue::Table(t) => t.len(),
             _ => panic!("length error!"),
         };
         self.stack_mut().push(LuaValue::Integer(_len as i64));
@@ -431,7 +431,7 @@ impl LuaAPI for LuaState {
 
     fn get_global(&mut self, name: &str) -> i8 {
         if let LuaValue::Table(r) = &self.registry {
-            let t = r.borrow().get(&LUA_RIDX_GLOBALS);
+            let t = r.get(&LUA_RIDX_GLOBALS);
             let k = LuaValue::Str(name.to_string()); // TODO
             self.get_table_impl(&t, &k)
         } else {
@@ -464,7 +464,7 @@ impl LuaAPI for LuaState {
 
     fn set_global(&mut self, name: &str) {
         if let LuaValue::Table(r) = &self.registry {
-            let t = r.borrow().get(&LUA_RIDX_GLOBALS);
+            let t = r.get(&LUA_RIDX_GLOBALS);
             let v = self.stack_mut().pop();
             let k = LuaValue::Str(name.to_string()); // TODO
             LuaState::set_table_impl(&t, k, v);
@@ -509,7 +509,7 @@ impl LuaAPI for LuaState {
 impl LuaState {
     fn get_table_impl(&mut self, t: &LuaValue, k: &LuaValue) -> i8 {
         if let LuaValue::Table(tbl) = t {
-            let v = tbl.borrow().get(k);
+            let v = tbl.get(k);
             let type_id = v.type_id();
             self.stack_mut().push(v);
             type_id
@@ -520,7 +520,7 @@ impl LuaState {
 
     fn set_table_impl(t: &LuaValue, k: LuaValue, v: LuaValue) {
         if let LuaValue::Table(tbl) = t {
-            tbl.borrow_mut().put(k, v);
+            tbl.put(k, v);
         } else {
             panic!("not a table!");
         }

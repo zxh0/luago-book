@@ -127,7 +127,10 @@ impl Instruction for u32 {
             // OP_CLOSURE => (),
             // OP_VARARG => (),
             // OP_EXTRAARG => (),
-            _ => unimplemented!(),
+            _ => {
+                dbg!(self.opname());
+                unimplemented!()
+            }
         }
     }
 }
