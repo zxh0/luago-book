@@ -135,6 +135,14 @@ impl LuaStack {
     }
 
     pub fn set(&mut self, idx: isize, val: LuaValue) {
+        if idx < LUA_REGISTRYINDEX {
+            /* upvalues */
+            let uv_idx = LUA_REGISTRYINDEX - idx - 1;
+            if (uv_idx as usize) < self.closure.upvals.len() {
+                //*(c.upvals[uv_idx].val) = val
+            }
+            return;
+        }
         if idx == LUA_REGISTRYINDEX {
             self.registry = val;
             return;
