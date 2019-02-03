@@ -92,8 +92,8 @@ impl LuaStack {
     pub fn is_valid(&self, idx: isize) -> bool {
         if idx < LUA_REGISTRYINDEX {
             /* upvalues */
-            let uv_idx = (LUA_REGISTRYINDEX - idx - 1) as usize;
-            return uv_idx < self.closure.upvals.len();
+            let uv_idx = LUA_REGISTRYINDEX - idx - 1;
+            return (uv_idx as usize) < self.closure.upvals.len();
         }
         if idx == LUA_REGISTRYINDEX {
             return true;
@@ -103,6 +103,14 @@ impl LuaStack {
     }
 
     pub fn get(&self, idx: isize) -> LuaValue {
+        if idx < LUA_REGISTRYINDEX {
+            /* upvalues */
+            let uv_idx = LUA_REGISTRYINDEX - idx - 1;
+            if (uv_idx as usize) >= self.closure.upvals.len() {
+                return LuaValue::Nil;
+            }
+            // return *(c.upvals[uv_idx].val)
+        }
         if idx == LUA_REGISTRYINDEX {
             return self.registry.clone();
         }
