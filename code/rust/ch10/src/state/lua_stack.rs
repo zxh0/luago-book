@@ -8,6 +8,7 @@ pub struct LuaStack {
     registry: LuaValue,
     pub closure: Rc<Closure>, // TODO
     pub varargs: Vec<LuaValue>,
+    pub openuvs: usize, // TODO
     pub pc: isize,
 }
 
@@ -18,6 +19,7 @@ impl LuaStack {
             registry: registry,
             closure: closure,
             varargs: Vec::new(),
+            openuvs: 0,
             pc: 0,
         }
     }
@@ -88,6 +90,11 @@ impl LuaStack {
     }
 
     pub fn is_valid(&self, idx: isize) -> bool {
+        if idx < LUA_REGISTRYINDEX {
+            /* upvalues */
+            let uv_idx = (LUA_REGISTRYINDEX - idx - 1) as usize;
+            return uv_idx < self.closure.upvals.len();
+        }
         if idx == LUA_REGISTRYINDEX {
             return true;
         }
