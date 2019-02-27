@@ -217,7 +217,9 @@ public class LuaStateImpl implements LuaState, LuaVM {
         if (val instanceof String) {
             return (String) val;
         } else if (val instanceof Long || val instanceof Double) {
-            return val.toString();
+            String str = val.toString();
+            stack.set(idx, str);
+            return str;
         } else {
             return null;
         }
