@@ -33,4 +33,5 @@ sh gradlew ch16:run --args $PWD/../lua/ch02/hello_world.lua | grep -q print
 sh gradlew ch17:run --args $PWD/../lua/ch02/hello_world.lua | grep -q "Hello, World!"
 sh gradlew ch18:run --args $PWD/../lua/ch02/hello_world.lua | grep -q "Hello, World!"
 
+rm *.luac
 echo OK
