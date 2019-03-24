@@ -1,8 +1,9 @@
 from lua_state import LuaState
+import sys
 
 
 def main():
-    with open('./test/function_call.luac', 'rb') as f:
+    with open(sys.argv[1], 'rb') as f:
         data = f.read()
         ls = LuaState()
         ls.load(data)

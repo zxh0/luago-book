@@ -21,7 +21,7 @@ def lua_main(proto):
 
 
 def main():
-    bc = BinaryChunk('./test/sum.luac')
+    bc = BinaryChunk('../test/sum.luac')
     bc.print_header()
     bc.check_header()
     bc.print_main_func()

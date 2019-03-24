@@ -1,5 +1,6 @@
 from lua_state import LuaState
 from thread_state import ThreadStatus
+import sys
 
 
 def py_print(ls):
@@ -13,7 +14,7 @@ def py_print(ls):
             print(ls.type_name(ls.type(i)), end='')
 
         if i < nargs:
-            print('\t', end='')
+            print(' ', end='')
 
     print()
     return 0
@@ -32,7 +33,7 @@ def pcall(ls):
 
 
 def main():
-    with open('./test/exception.luac', 'rb') as f:
+    with open(sys.argv[1], 'rb') as f:
         data = f.read()
         ls = LuaState()
         ls.register('print', py_print)

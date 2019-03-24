@@ -1,5 +1,6 @@
 from lua_state import LuaState
 from lua_type import LuaType
+import sys
 
 
 def py_print(ls):
@@ -13,7 +14,7 @@ def py_print(ls):
             print(ls.type_name(ls.type(i)), end='')
 
         if i < nargs:
-            print('\t', end='')
+            print(' ', end='')
 
     print()
     return 0
@@ -63,7 +64,7 @@ def ipairs_aux(ls):
 
 
 def main():
-    with open('./test/iterator.luac', 'rb') as f:
+    with open(sys.argv[1], 'rb') as f:
         data = f.read()
         ls = LuaState()
         ls.register('print', py_print)
