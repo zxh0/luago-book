@@ -2,6 +2,7 @@ from binary_chunk import BinaryChunk
 from lua_state import LuaState
 from opcode import Instruction
 from opcode import OpCode
+import sys
 
 
 def lua_main(proto):
@@ -20,7 +21,7 @@ def lua_main(proto):
 
 
 def main():
-    bc = BinaryChunk('./test/table.luac')
+    bc = BinaryChunk(sys.argv[1])
     bc.print_header()
     bc.check_header()
     bc.print_main_func()
