@@ -354,8 +354,8 @@ class LuaState:
         if len(proto.upvalues) > 0:
             env = self.registry.get(Consts.LUA_RIDX_GLOBALS)
             closure.upvals[0] = env
-            print('env: ', end='')
-            env.dump()
+            #print('env: ', end='')
+            #env.dump()
         return ThreadStatus.OK
 
     def call(self, nargs, nresults):
@@ -409,8 +409,8 @@ class LuaState:
             pc = self.get_pc() + 1
             inst = Instruction(self.fetch())
             inst.execute(self)
-            print('(%3d) [%02d] %-12s ' % (self.time, pc, inst.op_name()), end='')
-            self.print_stack()
+            #print('(%3d) [%02d] %-12s ' % (self.time, pc, inst.op_name()), end='')
+            #self.print_stack()
             self.time += 1
             if inst.op_code() == OpCode.RETURN:
                 break

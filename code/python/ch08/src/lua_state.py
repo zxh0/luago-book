@@ -342,8 +342,8 @@ class LuaState:
             pc = self.get_pc() + 1
             inst = Instruction(self.fetch())
             inst.execute(self)
-            print('[%02d] %-12s ' % (pc, inst.op_name()), end='')
-            self.print_stack()
+            #print('[%02d] %-12s ' % (pc, inst.op_name()), end='')
+            #self.print_stack()
             if inst.op_code() == OpCode.RETURN:
                 break
 

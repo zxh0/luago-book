@@ -1,4 +1,5 @@
 from lua_state import LuaState
+import sys
 
 
 def py_print(ls):
@@ -30,7 +31,7 @@ def set_metatable(ls):
 
 
 def main():
-    with open('./test/vector.luac', 'rb') as f:
+    with open(sys.argv[1], 'rb') as f:
         data = f.read()
         ls = LuaState()
         ls.register('print', py_print)

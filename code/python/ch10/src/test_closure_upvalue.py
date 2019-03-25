@@ -1,4 +1,5 @@
 from lua_state import LuaState
+import sys
 
 
 def py_print(ls):
@@ -19,7 +20,7 @@ def py_print(ls):
 
 
 def main():
-    with open('./test/closure_upvalue.luac', 'rb') as f:
+    with open(sys.argv[1], 'rb') as f:
         data = f.read()
         ls = LuaState()
         ls.register('print', py_print)
