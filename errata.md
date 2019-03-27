@@ -16,6 +16,8 @@ VII		| 前言		| 第二段话								| 前18章的代表							| 前18章的代�
 177		| 9.3.1		| `GetGlobal()`第二种实现					| `return self.GetField(t, name)`		| `return self.GetField(-1, name)`		| ![泡泡][泡泡]			| 
 193		| 10.2.3	| [`PushGoClosure()`方法][p193]			| `closure.upvals[n-1] = &upvalue{&val}`|`closure.upvals[i-1] = &upvalue{&val}` | ![孤舟钓客][孤舟钓客]	|
 236		| 13.1		| 倒数第二段话第一行						| 。。。允许我们再有且仅。。。				| 。。。允许我们在有且仅。。。				| ![泡泡][泡泡]			| 
+252		| 14.3		| [`NextToken()`方法][p252a]				| case ';': ... return ... ""			| case ';': ... return ... ";"			| ![小灰先生][小灰先生]	| 
+252		| 14.3		| [`NextToken()`方法][p252b]				| case ',': ... return ... ""			| case ',': ... return ... ","			| ![小灰先生][小灰先生]	| 
 263		| 14.3.8	| [`NextToken()`方法][p263]和下面的文字	| `isLatter()`							|	 `isLetter()`						| ![泡泡][泡泡]			| 
 290		| 16.1.2	| 图16-2									| 上下文无言								| 上下文无关								| ![moon][moon]			| 
 369		| 19.1		| 第二段话								| 。。。定义数据库开启函数，				| 。。。定义数学库开启函数，				| ![泡泡][泡泡]			| 
@@ -33,4 +35,6 @@ VII		| 前言		| 第二段话								| 前18章的代表							| 前18章的代�
 [p122]: code/go/ch07/src/luago/state/lua_table.go#L36
 [p144]: code/go/ch08/src/luago/state/lua_stack.go#L8
 [p193]: code/go/ch10/src/luago/state/api_push.go#L47
+[p252a]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L80
+[p252b]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L83
 [p263]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
