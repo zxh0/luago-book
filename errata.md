@@ -29,12 +29,12 @@ VII		| 前言		| 第二段话								| 前18章的代表							| 前18章的代�
 [孤舟钓客]: readers/孤舟钓客.jpeg?raw=true "孤舟钓客"
 [开心就好]: readers/开心就好.jpeg?raw=true "开心就好"
 
-[p21]: code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
-[p29]: code/go/ch02/src/luago/binchunk/reader.go#L70
-[p104]: code/go/ch06/src/luago/vm/inst_operators.go#L100
-[p122]: code/go/ch07/src/luago/state/lua_table.go#L36
-[p144]: code/go/ch08/src/luago/state/lua_stack.go#L8
-[p193]: code/go/ch10/src/luago/state/api_push.go#L47
+[p21]:   code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
+[p29]:   code/go/ch02/src/luago/binchunk/reader.go#L70
+[p104]:  code/go/ch06/src/luago/vm/inst_operators.go#L100
+[p122]:  code/go/ch07/src/luago/state/lua_table.go#L36
+[p144]:  code/go/ch08/src/luago/state/lua_stack.go#L8
+[p193]:  code/go/ch10/src/luago/state/api_push.go#L47
 [p252a]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L80
 [p252b]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L83
-[p263]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
+[p263]:  code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
