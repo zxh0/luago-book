@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/zxh0/luago-book.svg?branch=master)](https://travis-ci.org/zxh0/luago-book)
 
 
-![GoToMoon](https://github.com/zxh0/luago-book/raw/master/GoToMoon.jpg)
+![GoToMoon](GoToMoon.jpg)
 
 
 * [jd.com](https://search.jd.com/Search?keyword=自己动手实现Lua&enc=utf-8)
