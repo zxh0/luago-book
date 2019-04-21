@@ -15,6 +15,7 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 160		| 8.4.6		| 第一段话第二行						| 。。。面相对象体系。						| 。。。面向对象体系。						| ![泡泡][泡泡]			| 
 177		| 9.3.1		| `GetGlobal()`第二种实现				| `return self.GetField(t, name)`		| `return self.GetField(-1, name)`		| ![泡泡][泡泡]			| 
 193		| 10.2.3	|[`PushGoClosure()`方法][p193]		| `closure.upvals[n-1] = &upvalue{&val}`|`closure.upvals[i-1] = &upvalue{&val}` | ![孤舟钓客][孤舟钓客]	|
+227		| 12.2		| `nextKey()`方法					| `self.changed = false`多余				| 换成空行								| ![zedongh][zedongh]	|
 236		| 13.1		| 倒数第二段话第一行					| 。。。允许我们再有且仅。。。				| 。。。允许我们在有且仅。。。				| ![泡泡][泡泡]			| 
 252		| 14.3		|[`NextToken()`方法][p252a]			| `case ';': ... return ... ""`			| `case ';': ... return ... ";"`		| ![小灰先生][小灰先生]	| 
 252		| 14.3		|[`NextToken()`方法][p252b]			| `case ',': ... return ... ""`			| `case ',': ... return ... ","`		| ![小灰先生][小灰先生]	| 
@@ -30,6 +31,7 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 [孤舟钓客]: readers/孤舟钓客.jpeg?raw=true "孤舟钓客"
 [开心就好]: readers/开心就好.jpeg?raw=true "开心就好"
 [无期相聚]: readers/无期相聚.jpeg?raw=true "无期相聚"
+[zedongh]: readers/zedongh.jpeg?raw=true "https://github.com/zedongh"
 
 [p21]:   code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
 [p29]:   code/go/ch02/src/luago/binchunk/reader.go#L70
