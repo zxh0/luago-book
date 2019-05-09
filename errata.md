@@ -13,6 +13,7 @@ VII		| 前言		| 第二段话							| 前18章的代表								| 前18章的代�
 111		| 6.2.7		| 例子								| `for i=1,2,100 do f() end`			| `for i=1,100,2 do f() end`			| ![balus][balus]		| 第二次印刷 
 122		| 7.2		|[多处][p122]						| `_floatToIntger()`					| `_floatToInteger()`					| ![moon][moon]			| 第二次印刷 
 127		| 7.3.1		| 倒数第二段话							| 。。。抽取成`GetTable()`方法，			| 。。。抽取成`getTable()`方法，			| ![balus][balus]		|
+129		| 7.3.2		| 最后一段话							| 。。。抽取成`SetTable()`方法，			| 。。。抽取成`setTable()`方法，			| ![balus][balus]		|
 144		| 8.2.1		|[luaStack结构体][p144]				| `closure *luaClosure`					| `closure *closure`					| ![小灰先生][小灰先生]		| 第二次印刷 
 145		| 8.2.1		| 最后一段话							| 。。。vararg字段用于。。。					| 。。。varargs字段用于。。。				| ![moon][moon]			| 第二次印刷 
 160		| 8.4.6		| 第一段话第二行						| 。。。面相对象体系。						| 。。。面向对象体系。						| ![泡泡][泡泡]			| 第二次印刷 
