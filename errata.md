@@ -16,6 +16,7 @@ VII		| 前言		| 第二段话							| 前18章的代表								| 前18章的代�
 129		| 7.3.2		| 最后一段话							| 。。。抽取成`SetTable()`方法，			| 。。。抽取成`setTable()`方法，			| ![balus][balus]		|
 144		| 8.2.1		|[luaStack结构体][p144]				| `closure *luaClosure`					| `closure *closure`					| ![小灰先生][小灰先生]		| 第二次印刷 
 145		| 8.2.1		| 最后一段话							| 。。。vararg字段用于。。。					| 。。。varargs字段用于。。。				| ![moon][moon]			| 第二次印刷 
+152		| 8.4.1		| 本页倒数第二段话第一行					| 。。。（iBx模式）。。。					| 。。。（iABx模式）。。。					| ![balus][balus]		|
 160		| 8.4.6		| 第一段话第二行						| 。。。面相对象体系。						| 。。。面向对象体系。						| ![泡泡][泡泡]			| 第二次印刷 
 177		| 9.3.1		| `GetGlobal()`第二种实现				| `return self.GetField(t, name)`		| `return self.GetField(-1, name)`		| ![泡泡][泡泡]			| 第二次印刷 
 193		| 10.2.3	|[`PushGoClosure()`方法][p193]		| `closure.upvals[n-1] = &upvalue{&val}`|`closure.upvals[i-1] = &upvalue{&val}` | ![孤舟钓客][孤舟钓客]		| 第二次印刷
