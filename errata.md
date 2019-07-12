@@ -6,6 +6,7 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 11		| 2.2		| 第一段话第二行						| 。。。件：第二，							| 。。。件；第二，							| ![moon][moon]			| 第二次印刷 
 12		| 2.2.1		| 第三段话							| 调式信息								| 调试信息								| ![泡泡][泡泡]			| 第二次印刷 
 21		| 2.3.3		|[末尾倒数第7行代码][p21]				| `CSZIET_SIZE`							| `CSIZET_SIZE`							| ![小灰先生][小灰先生]	| 第二次印刷 
+26		| 2.3.4		| 10.行号表							| 示例里第二行的波浪线少标记了两个0			|										| ![逍遥][逍遥]			|
 29		| 2.4.2		|[末尾倒数第3行代码][p29]				| `CSZIET_SIZE`							| `CSIZET_SIZE`							| ![小灰先生][小灰先生]	| 第二次印刷 
 104		| 6.2.4		|[LEN指令实现代码][p104]				| `func _len(...)`						| `func length(...)`					| ![小灰先生][小灰先生]	| 第二次印刷 
 106		| 6.2.5		| 第一段话第二行						| 如果。。。匹配，则跳过下一条指令。			| 如果。。。不匹配，则跳过下一条指令。		| ![开心就好][开心就好]	| 第二次印刷 
@@ -41,6 +42,7 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 [zedongh]: readers/zedongh.jpeg "https://github.com/zedongh"
 [balus]: readers/balus.jpeg "https://github.com/BalusChen"
 [小海星]: readers/小海星.jpeg "小海星"
+[逍遥]: readers/逍遥.jpeg "逍遥"
 
 [p21]:   code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
 [p29]:   code/go/ch02/src/luago/binchunk/reader.go#L70
