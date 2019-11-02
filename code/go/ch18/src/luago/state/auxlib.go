@@ -117,15 +117,15 @@ func (self *luaState) OptString(arg int, def string) string {
 // [-0, +?, e]
 // http://www.lua.org/manual/5.3/manual.html#luaL_dofile
 func (self *luaState) DoFile(filename string) bool {
-	return self.LoadFile(filename) == LUA_OK &&
-		self.PCall(0, LUA_MULTRET, 0) == LUA_OK
+	return self.LoadFile(filename) != LUA_OK ||
+		self.PCall(0, LUA_MULTRET, 0) != LUA_OK
 }
 
 // [-0, +?, –]
 // http://www.lua.org/manual/5.3/manual.html#luaL_dostring
 func (self *luaState) DoString(str string) bool {
-	return self.LoadString(str) == LUA_OK &&
-		self.PCall(0, LUA_MULTRET, 0) == LUA_OK
+	return self.LoadString(str) != LUA_OK ||
+		self.PCall(0, LUA_MULTRET, 0) != LUA_OK
 }
 
 // [-0, +1, m]
