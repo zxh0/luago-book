@@ -26,10 +26,11 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 236		| 13.1		| 倒数第二段话第一行					| 。。。允许我们再有且仅。。。				| 。。。允许我们在有且仅。。。				| ![泡泡][泡泡]			| 第二次印刷 
 252		| 14.3		|[`NextToken()`方法][p252a]			| `case ';': ... return ... ""`			| `case ';': ... return ... ";"`		| ![小灰先生][小灰先生]	| 第二次印刷 
 252		| 14.3		|[`NextToken()`方法][p252b]			| `case ',': ... return ... ""`			| `case ',': ... return ... ","`		| ![小灰先生][小灰先生]	| 第二次印刷 
-263		| 14.3.8	|[`NextToken()`方法][p263]和下面的文字	| `isLatter()`							| `isLetter()`							| ![泡泡][泡泡]			| 第二次印刷 
+263		| 14.3.8	|[`NextToken()`方法][p263a]和下的文字	| `isLatter()`							| `isLetter()`							| ![泡泡][泡泡]			| 第二次印刷 
 263		| 14.3.8	|[`NextToken()`方法][p263b]			| `return line, ...`					| `return self.line, ...`				| ![zedongh][zedongh]	| 第二次印刷
 290		| 16.1.2	| 图16-2								| 上下文无言								| 上下文无关								| ![moon][moon]			| 第二次印刷 
 304		| 16.4		|[表达式EBNF][p304]					| 少了exp3								| 请参考源代码注释							| ![无期相聚][无期相聚]	| 第二次印刷
+359		| 18.2.2	|[`DoString()`][p356b]和[`DoFile()`][p356a]方法	| 返回值反了					| 请参考最新源代码							| ![mzf][mzf]			|
 369		| 19.1		| 第二段话							| 。。。定义数据库开启函数，				| 。。。定义数学库开启函数，				| ![泡泡][泡泡]			| 第二次印刷 
 377		| 19.5		| 第三段话第二行						| 。。。创建lib_os.go.go文件，				| 。。。创建lib_os.go文件，				| ![泡泡][泡泡]			| 第二次印刷 
 
@@ -43,6 +44,7 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 [balus]: readers/balus.jpeg "https://github.com/BalusChen"
 [小海星]: readers/小海星.jpeg "小海星"
 [逍遥]: readers/逍遥.jpeg "逍遥"
+[mzf]: readers/mzf.jpeg "mzf"
 
 [p21]:   code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
 [p29]:   code/go/ch02/src/luago/binchunk/reader.go#L70
@@ -52,6 +54,8 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 [p193]:  code/go/ch10/src/luago/state/api_push.go#L47
 [p252a]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L80
 [p252b]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L83
-[p263]:  code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
+[p263a]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L204
 [p263b]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L207
 [p304]:  code/go/ch16/src/luago/compiler/parser/parse_exp.go#L33
+[p356a]: code/go/ch18/src/luago/state/auxlib.go#L119
+[p356b]: code/go/ch18/src/luago/state/auxlib.go#L126
