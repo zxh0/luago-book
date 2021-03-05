@@ -15,6 +15,7 @@ luac -o ch10.luac $LUA/ch10/test.lua
 luac -o vec2.luac $LUA/ch11/vector2.lua
 luac -o ch12.luac $LUA/ch12/test.lua
 luac -o ch13.luac $LUA/ch13/test.lua
+luac -o bug21.luac $LUA/bugs/table_bug.lua
 
 cd $GO/ch01/luago;  go run luago 2>&1 | grep -q 'Hello, World!'
 cd $GO/ch02/luago;  go run luago $BOOK/hw.luac | grep -q main
@@ -44,6 +45,9 @@ cd $GO/ch20/luago
 cp $LUA/ch20/*.lua .
 go run luago test.lua | tr -d '\n' | grep -q "foobar"
 rm *.lua
+
+cd $GO/ch21/luago
+go run luago $BOOK/bug21.luac | grep -q d
 
 rm $BOOK/*.luac
 echo OK
