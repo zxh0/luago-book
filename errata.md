@@ -15,6 +15,7 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 111		| 6.2.7		| 例子								| `for i=1,2,100 do f() end`			| `for i=1,100,2 do f() end`			| ![balus][balus]		| 第二次印刷 
 113		| 6.2.7		| 本页第二段话						| 请读者在inst_operators.go文件里。。。	| 请读者在inst_for.go文件里。。。			| ![小海星][小海星]		|
 122		| 7.2		|[多处][p122]						| `_floatToIntger()`					| `_floatToInteger()`					| ![moon][moon]			| 第二次印刷 
+124		| 7.2		| `_shrinkArray()`代码				| `if`后面少了`else`						| [加上][p124]`else { break }`			| ![taoistcard][taoistcard]|
 124 	| 7.2 		| 倒数一段话第一行						| 由于`set()`方法…… 						| 由于`put()`方法……						| ![Deng][Deng]			|
 127		| 7.3.1		| 倒数第二段话						| 。。。抽取成`GetTable()`方法，			| 。。。抽取成`getTable()`方法，			| ![balus][balus]		|
 129		| 7.3.2		| 最后一段话							| 。。。抽取成`SetTable()`方法，			| 。。。抽取成`setTable()`方法，			| ![balus][balus]		|
@@ -56,11 +57,13 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 [mzf]: readers/mzf.jpeg "mzf"
 [Fer]: readers/Fer.jpeg "Fer"
 [Deng]: readers/CaigerDeng.jpeg "CaigerDeng"
+[taoistcard]: readers/taoistcard.png "https://github.com/taoistcard"
 
 [p21]:   code/go/ch02/src/luago/binchunk/binary_chunk.go#L9
 [p29]:   code/go/ch02/src/luago/binchunk/reader.go#L70
 [p104]:  code/go/ch06/src/luago/vm/inst_operators.go#L100
 [p122]:  code/go/ch07/src/luago/state/lua_table.go#L36
+[p124]:  code/go/ch07/src/luago/state/lua_table.go#L82
 [p144]:  code/go/ch08/src/luago/state/lua_stack.go#L8
 [p193]:  code/go/ch10/src/luago/state/api_push.go#L47
 [p252a]: code/go/ch14/src/luago/compiler/lexer/lexer.go#L80
