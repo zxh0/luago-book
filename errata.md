@@ -23,7 +23,7 @@ VII		| 前言		| 第二段话							| 前18章的代表							| 前18章的代�
 144		| 8.2.1		|[luaStack结构体][p144]				| `closure *luaClosure`					| `closure *closure`					| ![小灰先生][小灰先生]	| 第二次印刷 
 145		| 8.2.1		| 最后一段话							| 。。。vararg字段用于。。。				| 。。。varargs字段用于。。。				| ![moon][moon]			| 第二次印刷 
 152		| 8.4.1		| 本页倒数第二段话第一行				| 。。。（iBx模式）。。。					| 。。。（iABx模式）。。。					| ![balus][balus]		|
-156   | 8.4.2   | 第一段话第二行           |由于要接收f()的全部返回值        |由于要接收g()的全部返回值| ![ShakeM][ShakeM] |
+156		| 8.4.2		| 第一段话第二行						|由于要接收`f()`的全部返回值				|由于要接收`g()`的全部返回值				| ![ShakeM][ShakeM]		|
 160		| 8.4.6		| 第一段话第二行						| 。。。面相对象体系。						| 。。。面向对象体系。						| ![泡泡][泡泡]			| 第二次印刷 
 177		| 9.3.1		| `GetGlobal()`第二种实现				| `return self.GetField(t, name)`		| `return self.GetField(-1, name)`		| ![泡泡][泡泡]			| 第二次印刷 
 178 	| 9.3.2 	| 倒数第一段话最后一行					| 录下创建inst_Upvalue.go文件 			| 录下创建inst_upvalue.go文件				| ![Deng][Deng]			|
